@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService{
 		if(userVO != null) {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
-			userVO.setUser_role("USER");
+			userVO.setRole("ROLE_USER");
 			try {
 				userDAO.insert(userVO);
 			} catch (SQLException e) {
@@ -105,6 +105,18 @@ public class UserServiceImpl implements UserService{
 			e.printStackTrace();
 		}
 		return uv;
+	}
+
+	@Override
+	public int selectCountByEmail(String email) {
+		int countEmail = 1;
+		try {
+			countEmail = userDAO.selectCountByEmail(email);
+		} catch (SQLException e) {
+			log.error("이메일 중복 확인 중 오류 발생: {}", e.getMessage());
+			e.printStackTrace();
+		}
+		return countEmail;
 	}
 
 }

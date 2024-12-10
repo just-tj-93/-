@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import kr.just.tj.service.DetailService;
 import kr.just.tj.service.PlanService;
 import kr.just.tj.service.UserService;
@@ -46,8 +49,8 @@ public class HomeController {
 	public UserVO getUserInfo() {
 		UserVO userVO = new UserVO();
 		if (isUserLoggedin()) {
-			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			userVO = userService.selectByUsername(username);
+			String user_name = SecurityContextHolder.getContext().getAuthentication().getName();
+			userVO = userService.selectByUsername(user_name);
 
 		}
 		return userVO;
@@ -99,18 +102,41 @@ public class HomeController {
 		return "country";
 	}
 	@GetMapping("/my")
-	public String my(
+	public String my(HttpSession session,RedirectAttributes redirectAttributes,
 			Model model) {
-		model.addAttribute("newLine", "\n");
-		model.addAttribute("br", "<br>");
+		// 사용자 로그인 여부 확인
+			Integer user_id = (Integer) session.getAttribute("user_id");
+			System.out.println("세션 아이디:" + user_id);
+			if (user_id == null) {
+				redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+				return "redirect:/login"; // 로그인 페이지로 리다이렉트
+			}
+		List<PlanVO> plist = planService.selectPlanByUserId(user_id);
+		model.addAttribute("plist", plist);
 		return "myPage";
 	}
 	@GetMapping("/form")
-	public String form(
-			Model model) {
-		model.addAttribute("newLine", "\n");
-		model.addAttribute("br", "<br>");
+	public String form(HttpSession session,RedirectAttributes redirectAttributes,
+			Model model, @ModelAttribute UserVO userVO) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		System.out.println("세션 아이디:" + user_id);
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
+		model.addAttribute("user_id",userVO.getUser_id());
 		return "form";
 	}
-	
+	@GetMapping("/formOk")
+	public String formOkGet() {
+		return "redirect:/my";
+	}
+	@PostMapping("/formOk")
+	public String formOkPost(HttpSession session,RedirectAttributes redirectAttributes,
+			@ModelAttribute PlanVO planVO) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		planVO.setUser_id(user_id);
+		planService.insert(planVO);
+		return "redirect:/my";
+	}
 }

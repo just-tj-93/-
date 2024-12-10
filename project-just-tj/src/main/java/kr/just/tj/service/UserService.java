@@ -10,6 +10,7 @@ public interface UserService extends UserDetailsService{
 	UserVO selectByUsername(String user_name);
 	UserVO selectByEmail(String email);
 	int selectCountByUsername(String user_name);
+	int selectCountByEmail(String email);
 	UserVO selectUserById(int user_id);
 	void updateUser(UserVO userVO);
 }

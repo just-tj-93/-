@@ -22,12 +22,12 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 		
 		// 세션에 저장하고 싶다.
 		request.getSession().setAttribute("user", authentication.getPrincipal());
-		response.sendRedirect("/index");
+		response.sendRedirect("/");
 	
 		//user_id에 세션 저장 코드 추가
 
 		UserVO user = (UserVO) authentication.getPrincipal();
-		request.getSession().setAttribute("user_id", user.getId());
+		request.getSession().setAttribute("user_id", user.getUser_id());
 		
 	}
 }

@@ -25,12 +25,6 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
-	// 약관 동의 페이지
-    @GetMapping("/terms")
-    public String terms() {
-        return "terms";
-    }
 
 	// 회원가입 페이지
     @GetMapping("/join")
@@ -63,22 +57,23 @@ public class UserController {
     //아이디 중복확인
     @GetMapping(value = "/test/usernameCheck", produces = "text/plain;charset=UTF-8")
     @ResponseBody
-    public String usernameCheck(@RequestParam(required = false,  defaultValue = "user") String user_name) {
+    public String usernameCheck(@RequestParam("user_name") String user_name) {
         int count = userService.selectCountByUsername(user_name);
         log.info("아이디 중복 확인 요청: {}, 결과: {}", user_name, count);
         return String.valueOf(count);
     }
-   
+    //이메일 중복확인
+    @GetMapping(value = "/test/emailCheck", produces = "text/plain;charset=UTF-8")
+    @ResponseBody
+    public String emailCheck(@RequestParam("email") String email) {
+    	int count = userService.selectCountByEmail(email);
+    	log.info("이메일 중복 확인 요청: {}, 결과: {}", email, count);
+    	return String.valueOf(count);
+    }
     //로그인페이지
     @GetMapping("/login")
     public String login() {
         return "login"; 
-    }
-    
-    //홈페이지
-    @GetMapping("/home")
-    public String home() {
-    	return "home";
     }
     
     //아이디찾기페이지

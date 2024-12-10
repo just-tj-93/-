@@ -15,4 +15,5 @@ public interface PlanDAO {
 	void insert(PlanVO planVO) throws SQLException;
 	List<PlanVO> selectPlanList(HashMap<String, String> map) throws SQLException;
 	int selectPlanCount(HashMap<String, String> map) throws SQLException;
+	List<PlanVO> selectPlanByUserId(int user_id) throws SQLException;
 }

@@ -6,9 +6,9 @@
 	<!-- 회원가입 -->
 	<insert id="insert" parameterType="UserVO">
 		insert into user_main
-		(user_id, user_name, password, user_role, reg_date)
+		(user_id, user_name, password, role, reg_date, email)
 		values
-		(user_id_seq.nextval,#{user_name},#{password},#{user_role},SYSDATE)
+		(user_id_seq.nextval,#{user_name},#{password},#{role},SYSDATE,#{email})
 	</insert>
 	
 	<!-- 유저 이름으로 찾기 -->
@@ -25,7 +25,10 @@
 	<select id="selectCountByUsername" resultType="int" parameterType="String">
 		select count(*) from user_main where user_name=#{user_name}
 	</select>
-
+	<!-- 이메일 중복확인 -->
+	<select id="selectCountByEmail" resultType="int" parameterType="String">
+		select count(*) from user_main where email=#{email}
+	</select>
 	<!-- 사용자 ID로 회원 정보 조회 -->
 	<select id="selectUserById" parameterType="int" resultType="UserVO">
 		select * from user_main where user_id=#{user_id}

@@ -14,17 +14,52 @@
 <script type="text/javascript">	
 	$(function(){
 		
+		
 	});
-	function ch() {
-		if($("#country").val() == '일본') {
-			$("#kor").hide();
-			$("#jap").show();
-		}else {
-			$("#kor").show();
-			$("#jap").hide();
-		}
-	}
-	
+	$(document).ready(function() {
+        var mainSelect = $('#country');
+        var subSelect = $('#sub');
+        var hiddenInput = $('#city');
+
+        mainSelect.change(function() {
+            var selected = $(this).val();
+            
+            // 서브 카테고리 초기화
+            subSelect.empty().hide();
+            hiddenInput.val(selected);
+
+            if (selected === '한국') {
+                subSelect.append(
+                    '<option value="강릉">강릉</option>' +
+                    '<option value="여수">여수</option>' +
+                    '<option value="부산">부산</option>' +
+                    '<option value="제주">제주</option>'
+                );
+                subSelect.show();
+            } else if (selected === '일본') {
+                subSelect.append(
+                    '<option value="도쿄">도쿄</option>' +
+                    '<option value="오사카">오사카</option>' +
+                    '<option value="후쿠오카">후쿠오카</option>' +
+                    '<option value="가고시마">가고시마</option>'
+                );
+                subSelect.show();
+            }
+        });
+
+        subSelect.change(function() {
+            hiddenInput.val($(this).val());
+        });
+
+        // 폼 제출 전 유효성 검사
+        $('.form').submit(function(e) {
+            if (hiddenInput.val() === '') {
+                e.preventDefault();
+                alert('카테고리를 선택해주세요.');
+            }
+        });
+    });
+    
 </script>
 </head>
 <body>
@@ -46,28 +81,28 @@
 	</nav>
 	<section class="bg">
 		<div class="listBox">
-			<form action="">
-				<input type="hidden" name="user_id"/>
-				<input type="text" placeholder="일정 제목" name="title" size="100"/>
-				<div>
-					<select name="country" id="country" onchange="ch()">
-						<option value="한국">한국</option>
-						<option value="일본">일본</option>
-					</select>
-					<select name="city" id="kor">
-						<option value="강릉">강릉</option>
-						<option value="여수">여수</option>
-						<option value="부산">부산</option>
-						<option value="제주">제주</option>
-					</select>
-					<select name="city" id="jap" style="display: none;">
-						<option value="오사카">오사카</option>
-						<option value="도쿄">도쿄</option>
-						<option value="후쿠오카">후쿠오카</option>
-					</select>
-				</div>
-				<textarea name="subtitle" id="subtitle" cols="100" rows="5" placeholder="일정소개"></textarea>
-			</form>
+			<div class="formBox">
+				<form th:action="@{/formOk}" method="post" class="form">
+					
+					<input type="text" placeholder="일정 제목" name="title" size="92" style="margin-bottom: 10px; height: 40px;"/>
+					<div style="margin-bottom: 10px;">
+						<select name="country" id="country" onchange="change()" required="required">
+							<option value="">나라선택</option>
+							<option value="한국">한국</option>
+							<option value="일본">일본</option>
+						</select>
+						<select id="sub" style="display: none">
+							
+						</select>
+						<input type="hidden" name="city" id="city" value="" />
+					</div>
+					<textarea name="subtitle" id="subtitle" cols="93" rows="5" placeholder="일정소개" style="margin-bottom: 10px;"></textarea>
+					<div style="text-align: right;">
+						<input type="submit" value="저장"/>
+						<input type="reset" value="초기화" class="reset"/>
+					</div>
+				</form>
+			</div>
 		</div>
 	</section>
 </body>

@@ -17,6 +17,8 @@ public interface UserDAO {
 	UserVO selectByEmail(String email) throws SQLException;
 	// 동일한 아이디의 개수를 센다.(아이디 중복확인)
 	int selectCountByUsername(String user_name) throws SQLException;
+	// (이메일 중복확인)
+	int selectCountByEmail(String email) throws SQLException;
 	// id로 유저 정보 확인
 	UserVO selectUserById(int user_id) throws SQLException;
 	// 유저 정보 업데이트

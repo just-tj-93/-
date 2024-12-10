@@ -26,6 +26,7 @@ public class PlanServiceImpl implements PlanService{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		log.info("vo" + planVO);
 	}
 
 	@Override
@@ -59,6 +60,17 @@ public class PlanServiceImpl implements PlanService{
 			e.printStackTrace();
 		}
 		return totalcount;
+	}
+
+	@Override
+	public List<PlanVO> selectPlanByUserId(int user_id) {
+		List<PlanVO> plist = null;
+		try {
+			plist = planDAO.selectPlanByUserId(user_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return plist;
 	}
 
 }

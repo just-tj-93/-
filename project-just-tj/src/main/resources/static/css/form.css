@@ -59,10 +59,10 @@ header {
 	width: 700px;
 	margin:20px auto;
 }
-.add {
+.formBox {
 	position: relative;
-	left: 48%;
-	margin: 0px auto;
+	width: 680px;
+	margin: 30px auto;
 }
 a {
 	text-decoration:none; 

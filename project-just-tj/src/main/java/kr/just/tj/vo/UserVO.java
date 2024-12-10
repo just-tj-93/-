@@ -22,7 +22,7 @@ public class UserVO implements UserDetails{
 	private int user_id;
 	private String user_name;
 	private String password;
-	private String user_role;
+	private String role;
 	private String email;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm")
 	private Date reg_date;	
@@ -33,7 +33,7 @@ public class UserVO implements UserDetails{
 		//"ROLE_ADMIN, ROLE_USER" 형태의 스트링을 리스트로 변환하여 리턴하도록 구현
 		
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		String[] roles = user_role.split(",");
+		String[] roles = role.split(",");
 		if(roles!=null && roles.length>0) {
 			for(String role : roles) {
 				authorities.add(new SimpleGrantedAuthority(role.trim()));

@@ -34,15 +34,20 @@
 	<section class="bg">
 		<div class="listBox">
 			<table class="listTable">
-				<th:block>
+				<th:block th:each="list : ${plist}">
 					<tr>
-						<td></td>
+						<td>[[${list.title}]]</td>
+						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
+						<td><input type="submit" value="삭제" class="btn btn-light btn-sm"/></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
 					</tr>
 				</th:block>
 			</table>
-		</div>
-		<div class="add">
-			<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">일정추가</button>
+			<div class="add">
+				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">일정추가</button>
+			</div>
 		</div>
 	</section>
 </body>
