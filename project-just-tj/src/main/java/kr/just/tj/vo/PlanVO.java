@@ -13,5 +13,5 @@ public class PlanVO {
 	private String country;
 	private Date reg_date;
 	private int likeit;
-	
+	private String city;
 }

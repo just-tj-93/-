@@ -16,4 +16,8 @@ public class DetailVO {
 	private String info;
 	private int img_count;
 	private Date reg_date;
+	private String name;
+	private Double latitude;
+	private Double longitude;
+	private String address;
 }

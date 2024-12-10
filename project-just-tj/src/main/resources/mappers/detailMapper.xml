@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.just.tj.dao.DetailDAO">
+	<!-- 상세일정 저장 -->
+	<insert id="insert" parameterType="DetailVO">
+		insert into detail
+		(detail_id,plan_id,whatday,spot,visit_date,time_info,info,img_count,reg_date,name,latitude,longitude,address)
+		values
+		(detail_id_seq.nextval,#{plan_id},#{whatday},#{spot},#{visit_date},#{time_info},#{info},#{img_count},SYSDATE,#{name},#{latitude},#{longitude},#{address})
+	</insert>
+	<select id="selectDetailCount" resultType="int" parameterType="hashmap">
+		select count(*) from detail
+		<where>
+			<choose>
+				<when test="search != null and search != '0'.toString()">
+					${field} like '%'||#{search}||'%'
+				</when>
+				<when test="search == 0">
+					${field} like #{search}
+				</when>
+			</choose>
+		</where>
+	</select>
+	<!-- 한 페이지 얻기 -->
+	<select id="selectDetailList" parameterType="hashmap" resultType="DetailVO">
+		select 
+			R.*
+		from
+		(
+			select 
+				rownum rnum, Q.*
+			from
+				(select * from detail
+				<where>
+					<choose>
+						<when test="search != null and search != '0'.toString()">
+							${field} like '%'||#{search}||'%'
+						</when>
+						<when test="search == 0">
+							${field} like #{search}
+						</when>
+					</choose>
+				</where>
+				order by detail_id asc) Q
+			where
+			<![CDATA[
+				rownum<=#{endNo}
+				]]>
+		) R
+		where
+		<![CDATA[
+			rnum >= #{startNo}
+		]]>
+	</select>
+	<select id="selectByPlanId" parameterType="int" resultType="DetailVO">
+		select * from detail where plan_id=#{plan_id}
+	</select>
+</mapper>  

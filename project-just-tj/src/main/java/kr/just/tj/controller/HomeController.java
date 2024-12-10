@@ -1,5 +1,7 @@
 package kr.just.tj.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.just.tj.service.DetailService;
 import kr.just.tj.service.PlanService;
 import kr.just.tj.service.UserService;
 import kr.just.tj.vo.CommVO;
+import kr.just.tj.vo.DetailVO;
 import kr.just.tj.vo.PagingVO;
 import kr.just.tj.vo.PlanVO;
 import kr.just.tj.vo.UserVO;
@@ -28,6 +32,8 @@ public class HomeController {
 	private UserService userService;
 	@Autowired
 	private PlanService planService;
+	@Autowired
+	private DetailService detailService;
 
 	// 로그인 여부 확인
 	public boolean isUserLoggedin() {
@@ -66,9 +72,23 @@ public class HomeController {
 		return "main";
 	}
 	@GetMapping("/planview")
-	public String planView(Model model) {
-		
-		return "plan_view";
+	public String planView(@RequestParam(required = false, name = "field") String field,
+			@RequestParam(required = false, name = "search") String search,
+			@RequestParam(required = false, name = "plan_id") int plan_id,
+			@ModelAttribute CommVO commVO, Model model) {
+		PagingVO<DetailVO> dv = detailService.selectDetailList(commVO.getCurrentPage(), commVO.getSizeOfPage(), commVO.getSizeOfBlock(), field, search);
+		List<DetailVO> list = detailService.selectByPlanId(plan_id);
+		boolean isLogin = isUserLoggedin();
+		UserVO userVO = getUserInfo();
+		model.addAttribute("dv", dv);
+		model.addAttribute("list", list);
+		model.addAttribute("isLogin", isLogin);
+		model.addAttribute("uservo", userVO);
+		model.addAttribute("field", field);
+		model.addAttribute("search", search);
+		model.addAttribute("newLine", "\n");
+		model.addAttribute("br", "<br>");
+		return "planview";
 	}
 	@GetMapping("/country")
 	public String country(
@@ -78,6 +98,19 @@ public class HomeController {
 		
 		return "country";
 	}
-
+	@GetMapping("/my")
+	public String my(
+			Model model) {
+		model.addAttribute("newLine", "\n");
+		model.addAttribute("br", "<br>");
+		return "myPage";
+	}
+	@GetMapping("/form")
+	public String form(
+			Model model) {
+		model.addAttribute("newLine", "\n");
+		model.addAttribute("br", "<br>");
+		return "form";
+	}
 	
 }

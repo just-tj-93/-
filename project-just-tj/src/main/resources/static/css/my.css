@@ -49,7 +49,7 @@ header {
 	position: relative;
 	margin: 160px auto;
 	width: 750px;
-	height: 700px;
+	height: 300px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -58,24 +58,11 @@ header {
 .listTable {
 	width: 700px;
 	margin:20px auto;
-	
 }
-.title {
-	font-size: 15pt;
-	font-weight: bold;
-	text-indent: 20px;
-}
-.title:hover {
-	cursor: pointer;
-}
-.subtitle {
-	text-indent: 200px;
-}
-.like {
-	background: rgb(133,228,252,0.4);
-	width: 50px;
-	font-weight: bold;
-	border-radius: 5px;
+.add {
+	position: relative;
+	left: 48%;
+	margin: 0px auto;
 }
 a {
 	text-decoration:none; 
