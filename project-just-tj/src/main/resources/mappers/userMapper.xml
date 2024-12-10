@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.just.tj.dao.UserDAO">
+	<!-- 회원가입 -->
+	<insert id="insert" parameterType="UserVO">
+		insert into user_main
+		(user_id, user_name, password, user_role, reg_date)
+		values
+		(user_id_seq.nextval,#{user_name},#{password},#{user_role},SYSDATE)
+	</insert>
+	
+	<!-- 유저 이름으로 찾기 -->
+	<select id="selectByUsername" parameterType="String" resultType="UserVO">
+		select * from user_main where user_name=#{user_name}
+	</select>
+	
+	<!-- 이메일로 찾기 -->
+	<select id="selectByEmail" parameterType="String" resultType="UserVO">
+		select * from user_main where email=#{email}
+	</select>
+	
+	<!-- 아이디 중복확인 -->
+	<select id="selectCountByUsername" resultType="int" parameterType="String">
+		select count(*) from user_main where user_name=#{user_name}
+	</select>
+
+	<!-- 사용자 ID로 회원 정보 조회 -->
+	<select id="selectUserById" parameterType="int" resultType="UserVO">
+		select * from user_main where user_id=#{user_id}
+	</select>
+	
+	<!-- 사용자 정보 업데이트(비번변경)-->
+	<update id="updateUser" parameterType="UserVO">
+		 UPDATE user_main
+        SET password = #{password}
+        WHERE user_id=#{user_id}
+	</update>
+</mapper>  

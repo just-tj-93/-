@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .inline-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .inline-buttons button {
+            width: 48%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+  	//이메일인증여부
+	let emailVerified = false;
+  	//비밀번호 정규식(영문 + 숫자 4자리 이상)
+	const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{4,}$/;
+	
+        function findPostcode() {	//다음우편API
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById('address').value = data.address;
+                    document.getElementById("address_detail").focus();
+                }
+            }).open();
+        }
+        
+        
+        function sendVerificationCode() {	//인증번호 전송
+            const email = $('#email').val();
+            if (!email) {
+                alert('이메일을 입력하세요.');	//이메일 입력X
+                return;
+            }
+         	// Ajax를 호출하여 처리한다.
+            $.ajax({			
+                type: "POST",
+                url: "/auth/send-verification-code",
+                data: JSON.stringify({ email: email }),
+                contentType: "application/json",
+                success: function() {
+                    alert('인증번호가 발송되었습니다. 이메일을 확인하세요.');
+                },
+                error: function() {
+                    alert('인증번호 전송 중 오류가 발생했습니다.');
+                }
+            });
+        }
+        
+
+        function verifyCode() {		//이메일 인증번호 확인
+            const email = $('#email').val();
+            const code = $('#verification-code').val();
+            if (!code) {
+                alert('인증번호를 입력하세요.');		//인증번호 입력X
+                return;
+            }
+        	// Ajax를 호출하여 처리한다.
+            $.ajax({
+                type: "POST",
+                url: "/auth/verify-code",
+                data: JSON.stringify({ email: email, code: code }),
+                contentType: "application/json",
+                success: function() {
+                    alert('이메일 인증이 완료되었습니다!');
+                    emailVerified = true;	//이메일 인증이 완료됨
+                },
+                error: function() {
+                    alert('인증번호가 일치하지 않습니다.');
+                }
+            });
+        }
+        
+        
+        $(document).ready(function () {
+
+        	//비밀번호 정규식 유효성 검사
+        	$('#password').on('keyup', function() {
+				const password = $(this).val();
+				if (!passwordRegex.test(password)) {
+					$("#password_message").html("비밀번호는 영문과 숫자를 포함 4자리 이상이어야 합니다.")
+										.css('color', 'red')
+										.show();
+				} else {
+					$("#password_message").hide(); // 유효하면 메시지 숨김
+				}
+        	});
+
+        	//비밀번호 확인
+            $('#confirm_password').on('keyup', function() {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirm_password').val();
+                if (password !== confirmPassword) {
+                	$("#password_message").html("비밀번호가 일치하지 않습니다.").css('color', 'red').show();
+                } else {
+                	$("#password_message").html("비밀번호가 일치합니다.").css('color', 'blue').show();
+                }
+            });
+        	
+            // 폼 제출 이벤트 처리
+            $('form').on('submit', function (event) {
+            	
+                event.preventDefault(); // 기본 폼 제출 동작 막기
+
+                // 이메일 인증 여부 확인
+                if (!emailVerified) {
+                    alert('이메일 인증은 필수입니다.');
+                    return; // 인증되지 않으면 제출 중단
+                }
+                
+                //비밀번호 정규식 체크
+                const password = $('#password').val();
+                if (!passwordRegex.test(password)) {
+					alert('비밀번호는 영문과 숫자를 포함 4자리 이상이어야 합니다.');
+					return;	// 비밀번호가 정규식에 맞지 않으면 제출 중단
+                }
+                
+                
+             	// 비밀번호 확인 체크
+                const confirmPassword = $('#confirm_password').val();
+                if (password !== confirmPassword) {
+                    alert('비밀번호가 일치하지 않습니다.');
+                    return; // 비밀번호가 일치하지 않으면 제출 중단
+                }
+
+                const formData = $(this).serialize(); // 폼 데이터 직렬화
+
+                // 회원가입 AJAX 요청
+                $.ajax({
+                    type: 'POST',
+                    url: '/join',
+                    data: formData,
+                    success: function (response) {
+                        if (response.status === 'fail') {
+                            alert(response.message); // 중복된 항목 메시지 표시
+                        } else {
+                            alert(response.message); // 성공 메시지
+                            window.location.href = '/login'; // 로그인 페이지로 이동
+                        }
+                    },
+                    error: function () {
+                        alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                    }
+                });
+            });
+        });
+        
+     // 중복 확인 통합 함수
+        function checkDuplicate(type) {
+            let value = $(`#${type}`).val(); // 입력 값 읽기
+            let messageSelector = `#${type}Message`; // 메시지 표시 위치
+
+            if (value.length >= 1) { // 입력 값이 1자 이상일 때
+                if (value.indexOf(" ") !== -1) { // 공백 포함 여부 확인
+                    $(messageSelector).html("공백은 포함할 수 없어요").css('color', 'red').show();
+                } else {
+                    // Ajax 호출
+                    $.ajax({
+                        url: `/test/${type}Check`,
+                        type: 'GET',
+                        data: { [type]: value }, // 동적 파라미터 설정
+                        success: function (response) {
+                            // 응답이 숫자일 때 비교
+                            if (parseInt(response) === 0) {
+                                $(messageSelector).html(`사용 가능한 ${type === 'username' ? '아이디' : type === 'nickname' ? '닉네임' : type === 'email' ? '이메일' : '전화번호'}입니다.`)
+                                                  .css('color', 'blue').show();
+                                if (type === 'email') {
+									$('#emailVerifyButton').show();
+                                }
+
+                            } else {
+                                $(messageSelector).html(`사용 불가능한 ${type === 'username' ? '아이디' : type === 'nickname' ? '닉네임' : type === 'email' ? '이메일' : '전화번호'}입니다.`)
+                                                  .css('color', 'red').show();
+                                if (type === 'email') {
+									$('#emailVerifyButton').hide();
+                                }
+
+                            }
+                            
+                        },
+                        error: function (error) {
+                            console.log(error); // 에러 로그 출력
+                            $(messageSelector).html("서버 오류가 발생했습니다.").css('color', 'orange').show();
+                        }
+                    });
+                }
+            } else {
+                $(messageSelector).hide(); // 값이 없으면 숨김
+            }
+        }
+     
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>
+        	<!-- Logo desktop -->
+			<a href="index.html" class="logo"> 
+			<img src="images/icons/logo-01.png" alt="IMG-LOGO">
+			</a>
+		</h1>
+        <form id="joinForm" action="/join" method="post">
+            <label for="username">아이디:</label>
+   			<input name="username" id="username" type="text" onkeyup="checkDuplicate('username')" class="form-control" placeholder="아이디 입력" autofocus="autofocus" style="margin-bottom: 8px;"/>
+   			<span id="usernameMessage" style="color: blue; display: none;"></span>
+
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password" required placeholder="영문+숫자 4자리 이상 입력하세요.">
+            <label for="confirm_password">비밀번호 확인:</label>
+			<input type="password" id="confirm_password" name="confirm_password" required>
+			<span id="password_message" style="color: red; display: none;"></span>
+
+            <label for="nickname">닉네임:</label>
+            <input name="nickname" id="nickname" type="text" onkeyup="checkDuplicate('nickname')" class="form-control" style="margin-bottom: 8px;"/>
+            <span id="nicknameMessage" style="color: blue; display: none;"></span>
+
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">이메일:</label>
+            <input name="email" id="email" type="text" onkeyup="checkDuplicate('email')" class="form-control" style="margin-bottom: 8px;"/>
+            <span id="emailMessage" style="color: blue; display: none;"></span>
+            <button type="button" id="emailVerifyButton" onclick="sendVerificationCode()">이메일 인증</button>
+
+            <label for="verification-code">인증번호:</label>
+            <input type="text" id="verification-code" name="verification-code">
+            <button type="button" onclick="verifyCode()">인증번호 확인</button>
+
+            <label for="phone">전화번호:</label>
+            <input name="phone" id="phone" type="text" onkeyup="checkDuplicate('phone')" class="form-control" style="margin-bottom: 8px;" placeholder="- 빼고 입력하세요."/>
+            <span id="phoneMessage" style="color: blue; display: none;"></span>
+
+            <label for="birth_date">생년월일:</label>
+            <input type="date" id="birth_date" name="birth_date" required>
+
+            <label for="gender">성별:</label>
+            <select id="gender" name="gender" required>
+                <option value="M">남성</option>
+                <option value="F">여성</option>
+            </select>
+
+            <label for="news_email">이메일 수신:</label>
+            <select id="news_email" name="news_email">
+                <option value="수신안함">수신안함</option>
+                <option value="수신함">수신함</option>
+            </select>
+
+            <label for="postcode">우편번호:</label>
+            <input type="text" id="postcode" name="postcode" required readonly>
+            <button type="button" onclick="findPostcode()">우편번호 찾기</button>
+
+            <label for="address">주소:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="address_detail">상세주소:</label>
+            <input type="text" id="address_detail" name="address_detail" required>
+
+            <button type="submit">회원가입</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+shoppingmall_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g748b1a74702e07_shoppingmall_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+shoppingmall_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g748b1a74702e07_shoppingmall_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+shoppingmall_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g748b1a74702e07_shoppingmall_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+shoppingmall_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g748b1a74702e07_shoppingmall_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+shoppingmall_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g748b1a74702e07_shoppingmall_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+

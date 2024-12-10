@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            width: 400px;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #4A90E2;
+            outline: none;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #357ABD;
+        }
+
+        .alert {
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+
+        .alert-success {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+
+        .help-links {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .help-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #4A90E2;
+            font-size: 14px;
+        }
+
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>로그인</h2>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">아이디</label>
+                <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required >
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+            </div>
+            <button type="submit" class="login-button">로그인</button>
+
+            <div class="help-links">
+                <a href="/find-username">아이디 찾기</a> |
+                <a href="/find-password">비밀번호 찾기</a>
+            </div>
+
+            <div th:if="${param.error}" class="alert alert-error">
+                아이디 또는 비밀번호가 잘못되었습니다.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                성공적으로 로그아웃되었습니다.
+            </div>
+        </form>
+    </div>
+</body>
+</html>

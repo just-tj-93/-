@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.just.tj.dao.PlanDAO">
+	<!-- 메인 글 저장 -->
+	<insert id="insert" parameterType="PlanVO">
+		insert into plan
+		(plan_id, user_id, title, subtitle, country, likeit, reg_date)
+		values
+		(plan_id_seq.nextval,#{user_id},#{title},#{subtitle},#{country},#{likeit},SYSDATE)
+	</insert>
+	<select id="selectPlanCount" resultType="int" parameterType="hashmap">
+		select count(*) from plan
+		<where>
+			<choose>
+				<when test="search != null and search != '0'.toString()">
+					${field} like '%'||#{search}||'%'
+				</when>
+				<when test="search == 0">
+					${field} like #{search}
+				</when>
+			</choose>
+		</where>
+	</select>
+	<!-- 한 페이지 얻기 -->
+	<select id="selectPlanList" parameterType="hashmap" resultType="PlanVO">
+		select 
+			R.*
+		from
+		(
+			select 
+				rownum rnum, Q.*
+			from
+				(select * from plan
+				<where>
+					<choose>
+						<when test="search != null and search != '0'.toString()">
+							${field} like '%'||#{search}||'%'
+						</when>
+						<when test="search == 0">
+							${field} like #{search}
+						</when>
+					</choose>
+				</where>
+				order by plan_id desc) Q
+			where
+			<![CDATA[
+				rownum<=#{endNo}
+				]]>
+		) R
+		where
+		<![CDATA[
+			rnum >= #{startNo}
+		]]>
+	</select>
+	
+</mapper>  
