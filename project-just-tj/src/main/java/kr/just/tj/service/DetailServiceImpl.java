@@ -75,5 +75,14 @@ public class DetailServiceImpl implements DetailService{
 		return list;
 	}
 
+	@Override
+	public void deleteDetail(int detail_id) {
+		try {
+			detailDAO.deleteDetail(detail_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }

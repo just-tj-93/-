@@ -9,10 +9,23 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/view.css">
+<link rel="stylesheet" type="text/css" href="css/myplan.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
-	$(function(){ 
+	$(function(){
+		$(".plusBox").click(function(){
+			$(".detailBox").show();
+			$(".plusBox").hide();
+		})
+		$(".back").click(function(){
+			$(".detailBox").hide();
+			$(".plusBox").show();
+		})
+		$(".deleteForm").submit(function(){
+			if(!confirm('정말 삭제하시겠습니까?')){
+				return false;
+			}
+		})
 		// 사진 슬라이드
 		$(document).ready(function() {
             $('.container').each(function() {
@@ -43,8 +56,52 @@
                 updateButtons();
             });
         });
-	});
-	
+		// 이미지 미리보기
+		$("#file").on('change',function(){
+			$("#previewBox").empty();
+			var input = document.getElementById("file");
+			var files = input.files;
+			var filesArr = Array.prototype.slice.call(files);
+			var a = 0;
+			for (var i=0; i < files.length; i++) {
+			var reader = new FileReader();
+			reader.readAsDataURL(files[i]);
+			reader.onloadend = function(e) {
+				var lastModified = files[a].lastModified;
+		       $("#previewBox").append('<div class="img_div" id="'+lastModified+'"><div class="i_div"><i class="bi bi-x-square" key="'+lastModified+'"></i></div><img id="view" src="'+e.target.result+'" class="img_div_img"/></div>');
+		       a++;
+		    }
+		}
+		}); 
+		// 미리보기에서 선택 삭제
+		$(document).on("click", ".i_div", function(e){
+			var input = $("#file").prop('files');
+			const dataTranster = new DataTransfer();
+			var target = e.target;
+			var removeId = $(target).attr("key");
+			Array.from(input).filter(file => file.lastModified != removeId)
+			.forEach(file => {
+				dataTranster.items.add(file);
+			});
+			$("#file")[0].files = dataTranster.files;
+			if (dataTranster.files.length == 0) {        
+	        	$("#fileReset").hide();
+	        }
+			$("#"+removeId).remove();
+			var input = $("file")[0].files;	
+		}); 
+	})
+	// 멀티파일 업로드 체크
+	function fileCheck(event) {
+            const maxFiles = 5; 
+            const input = event.target;
+            const files = input.files;
+
+            if (files.length > maxFiles) {
+                alert(`${maxFiles} 개까지 첨부할 수 있습니다`);
+                input.value = '';
+            }
+        }
 </script>
 </head>
 <body>
@@ -74,7 +131,7 @@
 				<th:block th:each="dvo : ${list}">
 					<tr>
 						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
-						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd hh:mm')}]])</td>
+						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
 					<tr style="height: 10px;">
@@ -98,7 +155,6 @@
 						</td>
 						<td colspan="2">
 							<div class="map">구글 지도</div>
-							
 						</td>
 					</tr>
 					<tr style="height: 10px;">
@@ -107,20 +163,52 @@
 					<tr>
 						<td>[[${dvo.info}]]</td>
 						<td>&nbsp;</td>
-					</tr>
-					<tr style="border-bottom: 1px solid grey;">
-						<td colspan="3" style="text-align: right;">
-							<form th:action="@{/}">
-								<input type="submit" class="detailAdd" value="내 일정 추가" />
+						<td style="text-align: right;">
+							<form th:action="@{/deleteDetail}" method="post" class="deleteForm">
+								<input type="hidden" name="plan_id" th:value="${dvo.plan_id}"/>
+								<input type="hidden" name="detail_id" th:value="${dvo.detail_id}"/>
+								<input type="submit" class="btn btn-secondary btn-sm" value="삭제"/>
 							</form>
 						</td>
+					</tr>
+					<tr style="border-bottom: 1px solid grey;">
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
 					</tr>
 				</th:block>
 			</table>
-		
+			<div class="plusBox">
+				<button class="btn btn-primary btn-sm" style="margin-right: 20px; font-weight: bold;">+</button>
+			</div>
+			<div class="detailBox">
+				<form th:action="@{/detailAdd}" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="plan_id" th:value="${planVO.plan_id}"/>
+					<select name="whatday">
+						<option th:each="i : ${#numbers.sequence(1, planVO.days)}" th:value="${i}" th:text="${i}"></option>
+					</select>
+					<span>일차</span>
+					<div style="margin: 5px auto;">
+						<input type="text" name="spot" size="36" placeholder="장소명"/>
+						<input type="datetime-local" name="visit_date" placeholder="방문시간" style="width: 190px;"/>
+						<input type="text" name="time_info" placeholder="시간정보"/>
+					</div>
+					<div>
+						<input type="file" name="file" id="file" accept=".jpg,.png,.gif" onchange="fileCheck(event)" multiple="multiple"/>
+					</div>
+					<div style="width: 600px;">
+						<div class="form-group" id="previewBox" style="display: flex;"></div>
+					</div>
+					<div style="margin: 5px auto;">
+						<textarea name="info" id="info" cols="90" rows="3" placeholder="설명"></textarea>
+					</div>
+					<div style="text-align: right; margin: 20px;">
+						<input type="submit" value="저장"/>
+						<input type="button" class="back" value="취소"/>
+					</div>
+				</form>
+			</div>
 		</div>
 	</section>
 </body>

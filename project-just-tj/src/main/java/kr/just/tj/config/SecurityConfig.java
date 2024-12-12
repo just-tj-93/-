@@ -30,12 +30,11 @@ public class SecurityConfig{
 		// 인증 설정
 		http.authorizeHttpRequests((authorize)->{
 			authorize
-			.requestMatchers("/","/join","/login").permitAll()
+			.requestMatchers("/","/*","/join","/login").permitAll()
 			//.requestMatchers("/auth/send-verification-code", "/auth/verify-code").permitAll()
             .requestMatchers("/css/**").permitAll()
             //.requestMatchers("/error/**").permitAll()
             .requestMatchers("/my","/form").hasAnyRole("USER", "ADMIN")
-			.requestMatchers("*/**","/").permitAll()
 			.anyRequest().authenticated();  // 그 외 모든 요청은 인증 필요
 		});
 		// 사용자가 만든 로그인 폼을 사용하겠다.

@@ -5,10 +5,13 @@
 <mapper namespace="kr.just.tj.dao.DetailDAO">
 	<!-- 상세일정 저장 -->
 	<insert id="insert" parameterType="DetailVO">
+	<selectKey resultType="int" keyProperty="detail_id" order="BEFORE">
+		select detail_id_seq.nextval from dual
+	</selectKey>
 		insert into detail
 		(detail_id,plan_id,whatday,spot,visit_date,time_info,info,img_count,reg_date,name,latitude,longitude,address)
 		values
-		(detail_id_seq.nextval,#{plan_id},#{whatday},#{spot},#{visit_date},#{time_info},#{info},#{img_count},SYSDATE,#{name},#{latitude},#{longitude},#{address})
+		(#{detail_id},#{plan_id},#{whatday},#{spot},#{visit_date},#{time_info},#{info},#{img_count},SYSDATE,#{name,jdbcType=VARCHAR},#{latitude,jdbcType=DOUBLE},#{longitude,jdbcType=DOUBLE},#{address,jdbcType=VARCHAR})
 	</insert>
 	<select id="selectDetailCount" resultType="int" parameterType="hashmap">
 		select count(*) from detail
@@ -55,6 +58,9 @@
 		]]>
 	</select>
 	<select id="selectByPlanId" parameterType="int" resultType="DetailVO">
-		select * from detail where plan_id=#{plan_id}
+		select * from detail where plan_id=#{plan_id} order by whatday asc, visit_date asc
 	</select>
+	<delete id="deleteDetail" parameterType="int">
+		delete detail where detail_id=#{detail_id}
+	</delete>
 </mapper>  

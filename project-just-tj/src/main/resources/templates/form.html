@@ -82,9 +82,12 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="formBox">
-				<form th:action="@{/formOk}" method="post" class="form">
-					
+				<form th:action="@{/formOk}" method="post" class="form">		
 					<input type="text" placeholder="일정 제목" name="title" size="92" style="margin-bottom: 10px; height: 40px;"/>
+					<div style="margin-bottom: 10px;">
+						<label for="days">여행일수</label>
+						<input type="number" name="days" min="1" max="15" style="width: 40px;"/>일
+					</div>
 					<div style="margin-bottom: 10px;">
 						<select name="country" id="country" onchange="change()" required="required">
 							<option value="">나라선택</option>
@@ -95,8 +98,9 @@
 							
 						</select>
 						<input type="hidden" name="city" id="city" value="" />
+						
 					</div>
-					<textarea name="subtitle" id="subtitle" cols="93" rows="5" placeholder="일정소개" style="margin-bottom: 10px;"></textarea>
+					<textarea name="subtitle" id="subtitle" cols="93" rows="4" placeholder="일정소개" style="margin-bottom: 10px;"></textarea>
 					<div style="text-align: right;">
 						<input type="submit" value="저장"/>
 						<input type="reset" value="초기화" class="reset"/>

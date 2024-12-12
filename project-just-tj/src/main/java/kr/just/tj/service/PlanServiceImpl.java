@@ -73,4 +73,24 @@ public class PlanServiceImpl implements PlanService{
 		return plist;
 	}
 
+	@Override
+	public void delete(int plan_id) {
+		try {
+			planDAO.delete(plan_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public PlanVO selectPlanByPlanId(int plan_id) {
+		PlanVO planVO = null;
+		try {
+			planVO = planDAO.selectPlanByPlanId(plan_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return planVO;
+	}
+
 }

@@ -8,7 +8,9 @@ import kr.just.tj.vo.PlanVO;
 
 public interface PlanService {
 	void insert(PlanVO planVO);
+	void delete(int plan_id);
 	int selectPlanCount(HashMap<String, String> map);
 	PagingVO<PlanVO> selectPlanList(int currentPage, int sizeOfPage, int sizeOfBlock, String field, String search);
 	List<PlanVO> selectPlanByUserId(int user_id);
+	PlanVO selectPlanByPlanId(int plan_id);
 }

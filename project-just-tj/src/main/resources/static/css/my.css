@@ -59,6 +59,13 @@ header {
 	width: 700px;
 	margin:20px auto;
 }
+.title {
+	font-size: 14pt;
+	font-weight: bold;
+}
+.title:hover {
+	cursor: pointer;
+}
 .add {
 	position: relative;
 	left: 48%;

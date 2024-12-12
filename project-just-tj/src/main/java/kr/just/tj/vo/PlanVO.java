@@ -15,4 +15,5 @@ public class PlanVO {
 	private int likeit;
 	private String city;
 	private int user_id;
+	private int days;
 }

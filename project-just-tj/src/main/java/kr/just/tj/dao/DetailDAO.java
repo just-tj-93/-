@@ -13,6 +13,7 @@ import kr.just.tj.vo.DetailVO;
 public interface DetailDAO {
 	
 	void insert(DetailVO detailVO) throws SQLException;
+	void deleteDetail(int detail_id) throws SQLException;
 	List<DetailVO> selectDetailList(HashMap<String, String> map) throws SQLException;
 	int selectDetailCount(HashMap<String, String> map) throws SQLException;
 	List<DetailVO> selectByPlanId(int plan_id) throws SQLException;

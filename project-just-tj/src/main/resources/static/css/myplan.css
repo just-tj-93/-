@@ -44,6 +44,7 @@ header {
 	position: fixed;
 	top: 0; left: 0;
 	width: 100%; height: 100%;
+	overflow: scroll;
 }
 .listBox {
 	position: relative;
@@ -54,14 +55,58 @@ header {
 	background: rgba(205, 215, 255, 0.15);
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
+.titleBox {
+	display: flex;
+	justify-content: space-between;
+	margin: 10px auto;
+	text-indent: 10px;
+	width: 700px;
+	border-radius: 10px;
+	background: rgba(215, 215, 255, 0.5);
+}
 .listTable {
 	width: 700px;
 	margin:20px auto;
+	
 }
-.formBox {
-	position: relative;
-	width: 680px;
-	margin: 30px auto;
+.pic {
+	width: 230px; height: 150px;
+}
+.map {
+	border: 1px solid grey;
+	width: 250px; height: 150px;
+}
+.title {
+	font-size: 15pt;
+	font-weight: bold;
+	text-indent: 20px;
+}
+.title:hover {
+	cursor: pointer;
+}
+.subtitle {
+	text-indent: 200px;
+}
+.like {
+	background: rgb(133,228,252,0.4);
+	width: 50px;
+	font-weight: bold;
+	border-radius: 5px;
+}
+.plusBox {
+	margin-bottom: 10px;
+	text-align: right;
+}
+.detailBox {
+	display: none;
+	margin-left: 20px;
+}
+#previewBox img {
+	width: 110px; height: 110px;
+	border: 1px solid #ffffff;
+}
+#prev {
+	display: none;
 }
 a {
 	text-decoration:none; 
