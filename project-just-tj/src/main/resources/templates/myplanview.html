@@ -8,6 +8,7 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
 <link rel="stylesheet" type="text/css" href="css/myplan.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
@@ -102,6 +103,114 @@
                 input.value = '';
             }
         }
+	$(document).ready(function() {
+	    let map;
+	    let marker;
+	    let geocoder;
+	    let infowindow;
+
+	    function initMap() {
+	        const seoul = { lat: 37.5665, lng: 126.9780 }; 
+	        
+	        map = new google.maps.Map(document.getElementById('map'), {
+	            center: seoul,
+	            zoom: 15
+	        });
+
+	        geocoder = new google.maps.Geocoder();
+	        infowindow = new google.maps.InfoWindow();
+
+	        // 검색박스 자동완성 설정
+	        const searchInput = document.getElementById('search-input');
+	        const autocomplete = new google.maps.places.Autocomplete(searchInput);
+	        autocomplete.bindTo('bounds', map);
+	    }
+	 // 검색 버튼 클릭 이벤트
+	    $('#search-button').click(function(e) {
+	    	e.preventDefault(); // 폼 제출 방지
+	        searchLocation();
+	    });
+	    $('#search-input').keypress(function(e) {
+            if (e.which == 13) {
+                e.preventDefault(); // 폼 제출 방지
+                searchLocation();
+            }
+        });
+	 	
+	 // 장소 검색 함수
+	    function searchLocation() {
+	        const address = $('#search-input').val();
+	        
+	        const request = {
+	            query: address,
+	            fields: ['name', 'geometry', 'formatted_address']
+	        };
+	        const service = new google.maps.places.PlacesService(map);
+	        service.findPlaceFromQuery(request, function(results, status) {
+	            if (status === google.maps.places.PlacesServiceStatus.OK) {
+	                if (results[0]) {
+	                    // 이전 마커 제거
+	                    if (marker) {
+	                        marker.setMap(null);
+	                    }
+
+	                    // 새로운 마커 생성
+	                    const location = results[0].geometry.location;
+	                    map.setCenter(location);
+	                    
+	                    marker = new google.maps.Marker({
+	                        map: map,
+	                        position: location
+	                    });
+	                 
+                        $('#latitude').val(location.lat());
+                        $('#longitude').val(location.lng());
+                        $('#address').val(results[0].formatted_address);
+                        $('#name').val(results[0].name);
+	                    // 정보창 표시
+	                    infowindow.setContent(
+	                        '<div><strong>' + results[0].name + '</strong><br>' +
+	                        results[0].formatted_address + '</div>'
+	                    );
+	                    infowindow.open(map, marker);
+	                    $('#search-input').val(results[0].name);
+	                }
+	            } else {
+	                alert('검색 결과를 찾을 수 없습니다.');
+	            }
+	        });
+	 	}
+        $('#addForm').submit(function(e) {
+            if (!$('#latitude').val() || !$('#longitude').val()) {
+                e.preventDefault();
+                alert('위치를 먼저 선택해주세요.');
+                return false;
+            }
+        });
+        // 지도 초기화
+        initMap();
+    });
+	function initMap() {
+        /* 데이터가 있는 HTML 요소들로부터 지도 초기화 정보 불러오기 */
+        var locations = document.querySelectorAll('.location');
+        locations.forEach(function (location) {
+            var lat = parseFloat(location.dataset.latitude);
+            var lng = parseFloat(location.dataset.longitude);
+            var position = { lat: lat, lng: lng };
+            
+            var map = new google.maps.Map(location, {
+                zoom: 15,
+                center: position
+            });
+
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map
+            });
+        });
+    }
+
+    window.onload = initMap;
 </script>
 </head>
 <body>
@@ -113,10 +222,10 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/country'">
-				나라별
+			<div class="country" onclick="location.href='/my'">
+				일정공유
 			</div>
-			<div onclick="location.href='/my'">
+			<div onclick="location.href='/todo'">
 				나의일정
 			</div>
 		</div>
@@ -128,9 +237,9 @@
 				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<table class="listTable">
-				<th:block th:each="dvo : ${list}">
+				<th:block th:each="dvo, stat : ${list}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
+						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
 						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
@@ -140,21 +249,25 @@
 					<tr>
 						<td>
 							<div class="container" style="display: flex;">
-								<div style="position: relative; top: 60px; width: 35px;">
+								<div style="position: relative; top: 100px; width: 35px;">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-arrow-left-circle"></i></button>
 								</div>
 								<div class="pic" style="overflow: hidden;">
 									<th:block th:each="item: ${#numbers.sequence(1, dvo.img_count)}" >
-										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='/images/noimg.jpg'" width="auto" height="150"/>
+										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="220"/>
 									</th:block>
 								</div>
-								<div style="position: relative; top: 60px; width: 35px;">
+								<div style="position: relative; top: 100px; width: 35px;">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-arrow-right-circle"></i></button>
 								</div>
 							</div>
 						</td>
 						<td colspan="2">
-							<div class="map">구글 지도</div>
+							<div class="location"
+					             th:data-latitude="${dvo.latitude}" 
+					             th:data-longitude="${dvo.longitude}">
+					        </div>
+        					<p th:text="${dvo.address}"></p>
 						</td>
 					</tr>
 					<tr style="height: 10px;">
@@ -171,7 +284,7 @@
 							</form>
 						</td>
 					</tr>
-					<tr style="border-bottom: 1px solid grey;">
+					<tr style="border-bottom: 1px solid lightgrey;">
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -183,19 +296,28 @@
 				<button class="btn btn-primary btn-sm" style="margin-right: 20px; font-weight: bold;">+</button>
 			</div>
 			<div class="detailBox">
-				<form th:action="@{/detailAdd}" method="post" enctype="multipart/form-data">
+				<form th:action="@{/detailAdd}" method="post" id="addForm" enctype="multipart/form-data">
 					<input type="hidden" name="plan_id" th:value="${planVO.plan_id}"/>
 					<select name="whatday">
 						<option th:each="i : ${#numbers.sequence(1, planVO.days)}" th:value="${i}" th:text="${i}"></option>
 					</select>
 					<span>일차</span>
+					<div id="search-container">
+				        <input type="text" id="search-input" name="spot" size="50" placeholder="장소를 검색하세요">
+				        <button id="search-button">검색</button>
+				    </div>
+				    <div id="map"></div>
+				    <input type="hidden" id="latitude" name="latitude">
+		            <input type="hidden" id="longitude" name="longitude">
+		            <input type="hidden" id="address" name="address">
+		            <input type="hidden" id="name" name="name">
 					<div style="margin: 5px auto;">
-						<input type="text" name="spot" size="36" placeholder="장소명"/>
 						<input type="datetime-local" name="visit_date" placeholder="방문시간" style="width: 190px;"/>
 						<input type="text" name="time_info" placeholder="시간정보"/>
 					</div>
+					
 					<div>
-						<input type="file" name="file" id="file" accept=".jpg,.png,.gif" onchange="fileCheck(event)" multiple="multiple"/>
+						<input type="file" name="file" id="file" accept=".jpg,.png,.gif,.JPG,.jpeg" onchange="fileCheck(event)" multiple="multiple"/>
 					</div>
 					<div style="width: 600px;">
 						<div class="form-group" id="previewBox" style="display: flex;"></div>

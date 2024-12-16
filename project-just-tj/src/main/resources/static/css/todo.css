@@ -44,49 +44,32 @@ header {
 	position: fixed;
 	top: 0; left: 0;
 	width: 100%; height: 100%;
-	overflow: scroll;
 }
 .listBox {
 	position: relative;
 	margin: 160px auto;
-	width: 900px;
+	width: 750px;
+	height: 300px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
-.titleBox {
-	display: flex;
-	justify-content: space-between;
-	margin: 10px auto;
-	text-indent: 10px;
-	width: 850px;
-	border-radius: 10px;
-	background: rgba(215, 215, 255, 0.5);
-}
 .listTable {
-	width: 850px;
+	width: 700px;
 	margin:20px auto;
 }
-.container {
-	width: 500px;
+.title {
+	font-size: 14pt;
+	font-weight: bold;
 }
-.pic {
-	width: 350px;
-	height: 235px;
+.title:hover {
+	cursor: pointer;
 }
-.map {
-	border: 1px solid grey;
-	width: 250px; height: 150px;
-}
-img {
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
-.detailAdd {
-	border: none;
-	border-radius: 6px;
-	background: rgba(205, 225, 245, 0.5);
+.add {
+	position: relative;
+	left: 42%;
+	margin: 0px auto;
 }
 a {
 	text-decoration:none; 
@@ -96,11 +79,4 @@ a:link {
 }
 a:visited {
 	color: black;
-}
-.location {
-	width: 300px;
-	height: 180px;
-	margin-top: 5px;
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }

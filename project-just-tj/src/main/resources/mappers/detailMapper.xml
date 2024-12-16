@@ -58,7 +58,9 @@
 		]]>
 	</select>
 	<select id="selectByPlanId" parameterType="int" resultType="DetailVO">
-		select * from detail where plan_id=#{plan_id} order by whatday asc, visit_date asc
+		select * from detail where
+		 plan_id=#{plan_id}
+		 order by whatday asc, visit_date asc
 	</select>
 	<delete id="deleteDetail" parameterType="int">
 		delete detail where detail_id=#{detail_id}

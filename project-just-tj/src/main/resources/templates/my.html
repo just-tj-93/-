@@ -9,9 +9,16 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/main.css">
+<link rel="stylesheet" type="text/css" href="css/my.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
+	$(function(){
+		$(".deleteForm").submit(function(){
+			if(!confirm('정말 삭제하시겠습니까?')){
+				return false;
+			}
+		})
+	})
 </script>
 </head>
 <body>
@@ -34,21 +41,25 @@
 	<section class="bg">
 		<div class="listBox">
 			<table class="listTable">
-				<th:block th:each="pv : ${pv.list}">
+				<th:block th:each="list : ${plist}">
 					<tr>
-						<td class="title" th:onclick="location.href='/planview?plan_id=[[${pv.plan_id}]]'">[[${pv.title}]]</td>
-						<td class="regdate">[[${#dates.format(pv.reg_date,'yy/MM/dd')}]]</td>
-					</tr>
-					<tr style="border-bottom: 1px solid lightgrey;">
-						<td class="subtitle">[[${pv.subtitle}]]</td>
-						<td><div class="like">추천 [[${pv.likeit}]]</div></td>
+						<td class="title" th:onclick="|location.href='@{/myplanview(plan_id=${list.plan_id})}'|">[[${list.title}]]</td>
+						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
+						<td>
+							<form th:action="@{/deleteOk}" method="post" class="deleteForm">
+								<input type="hidden" name="plan_id" th:value="${list.plan_id}"/>
+								<input type="submit" value="삭제" class="btn btn-dark btn-sm"/>
+							</form>
+						</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
 					</tr>
 				</th:block>
 			</table>
-		<div class="pageInfo">[(${pv.pageList})]</div>
+			<div class="add">
+				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">추가</button>
+			</div>
 		</div>
 	</section>
 </body>

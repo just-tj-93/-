@@ -6,9 +6,9 @@
 	<!-- 메인 글 저장 -->
 	<insert id="insert" parameterType="PlanVO">
 		insert into plan
-		(plan_id, user_id, title, subtitle, country, likeit, reg_date,city,days)
+		(plan_id, user_id, title, subtitle, country, likeit, reg_date,city,days,start_date,end_date)
 		values
-		(plan_id_seq.nextval,#{user_id},#{title},#{subtitle},#{country},#{likeit},SYSDATE,#{city},#{days})
+		(plan_id_seq.nextval,#{user_id},#{title},#{subtitle},#{country},#{likeit},SYSDATE,#{city},#{days},#{start_date},#{end_date})
 	</insert>
 	<select id="selectPlanCount" resultType="int" parameterType="hashmap">
 		select count(*) from plan

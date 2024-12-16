@@ -157,22 +157,16 @@ public class HomeController {
 		return "planview";
 	}
 	@GetMapping("/myplanview")
-	public String myPlanView(@RequestParam(required = false, name = "field") String field,
-			@RequestParam(required = false, name = "search") String search,
-			@RequestParam(required = false, name = "plan_id") int plan_id,
+	public String myPlanView(@RequestParam(required = false, name = "plan_id") int plan_id,
 			@ModelAttribute CommVO commVO, Model model) {
-		PagingVO<DetailVO> dv = detailService.selectDetailList(commVO.getCurrentPage(), commVO.getSizeOfPage(), commVO.getSizeOfBlock(), field, search);
 		List<DetailVO> list = detailService.selectByPlanId(plan_id);
 		PlanVO planVO = planService.selectPlanByPlanId(plan_id);
 		boolean isLogin = isUserLoggedin();
 		UserVO userVO = getUserInfo();
-		model.addAttribute("dv", dv);
 		model.addAttribute("list", list);
 		model.addAttribute("isLogin", isLogin);
 		model.addAttribute("uservo", userVO);
 		model.addAttribute("planVO", planVO);
-		model.addAttribute("field", field);
-		model.addAttribute("search", search);
 		model.addAttribute("newLine", "\n");
 		model.addAttribute("br", "<br>");
 		return "myplanview";
@@ -204,9 +198,9 @@ public class HomeController {
 	                    return "redirect:/myplanview?plan_id=" + detailVO.getPlan_id();
 	                }
             		if(!file.isEmpty()) { 
-            			String originalFilename = file.getOriginalFilename();
-            			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            			String fileName = String.format("detail-%d-%d%s", detailVO.getDetail_id(), fileIndex, extension);
+            		//	String originalFilename = file.getOriginalFilename();
+            		//	String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            			String fileName = String.format("detail-%d-%d%s", detailVO.getDetail_id(), fileIndex, ".jpg");
 			            byte[] fileBytes = file.getBytes();
 			            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
 			            Options.shouldAutoCloseResponseInputStream(true);
@@ -267,13 +261,13 @@ public class HomeController {
 		}
 		return "redirect:/myplanview?plan_id=" + plan_id;
 	}
-	@GetMapping("/country")
-	public String country(
+	@GetMapping("/todo")
+	public String todo(
 			Model model) {
 		model.addAttribute("newLine", "\n");
 		model.addAttribute("br", "<br>");
 		
-		return "country";
+		return "todo";
 	}
 	@GetMapping("/my")
 	public String my(HttpSession session,RedirectAttributes redirectAttributes,
@@ -287,7 +281,7 @@ public class HomeController {
 			}
 		List<PlanVO> plist = planService.selectPlanByUserId(user_id);
 		model.addAttribute("plist", plist);
-		return "myPage";
+		return "my";
 	}
 	@GetMapping("/form")
 	public String form(HttpSession session,RedirectAttributes redirectAttributes,
@@ -310,6 +304,8 @@ public class HomeController {
 			@ModelAttribute PlanVO planVO) {
 		Integer user_id = (Integer) session.getAttribute("user_id");
 		planVO.setUser_id(user_id);
+		long diff = planVO.getEnd_date().getTime() - planVO.getStart_date().getTime();
+		planVO.setDays((int)diff/(1000*60*60*24)+1);
 		planService.insert(planVO);
 		return "redirect:/my";
 	}

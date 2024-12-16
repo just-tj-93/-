@@ -9,7 +9,7 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/my.css">
+<link rel="stylesheet" type="text/css" href="css/todo.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
 	$(function(){
@@ -30,10 +30,10 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/country'">
-				나라별
+			<div class="country" onclick="location.href='/my'">
+				일정공유
 			</div>
-			<div onclick="location.href='/my'">
+			<div onclick="location.href='/todo'">
 				나의일정
 			</div>
 		</div>
@@ -45,9 +45,6 @@
 					<tr>
 						<td class="title" th:onclick="|location.href='@{/myplanview(plan_id=${list.plan_id})}'|">[[${list.title}]]</td>
 						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
-						<td>
-							<button class="btn btn-light btn-sm" onclick="location.href='/'">수정</button>
-						</td>
 						<td>
 							<form th:action="@{/deleteOk}" method="post" class="deleteForm">
 								<input type="hidden" name="plan_id" th:value="${list.plan_id}"/>
@@ -61,7 +58,7 @@
 				</th:block>
 			</table>
 			<div class="add">
-				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">일정추가</button>
+				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">TODO 일정추가</button>
 			</div>
 		</div>
 	</section>

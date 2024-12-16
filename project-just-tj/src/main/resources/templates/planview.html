@@ -8,6 +8,7 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
 <link rel="stylesheet" type="text/css" href="css/view.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
@@ -44,7 +45,27 @@
             });
         });
 	});
-	
+	function initMap() {
+        /* 데이터가 있는 HTML 요소들로부터 지도 초기화 정보 불러오기 */
+        var locations = document.querySelectorAll('.location');
+        locations.forEach(function (location) {
+            var lat = parseFloat(location.dataset.latitude);
+            var lng = parseFloat(location.dataset.longitude);
+            var position = { lat: lat, lng: lng };
+            
+            var map = new google.maps.Map(location, {
+                zoom: 15,
+                center: position
+            });
+
+            var marker = new google.maps.Marker({
+                position: position,
+                map: map
+            });
+        });
+    }
+
+    window.onload = initMap;
 </script>
 </head>
 <body>
@@ -56,10 +77,10 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/country'">
-				나라별
+			<div class="country" onclick="location.href='/my'">
+				일정공유
 			</div>
-			<div onclick="location.href='/my'">
+			<div onclick="location.href='/todo'">
 				나의일정
 			</div>
 		</div>
@@ -73,7 +94,7 @@
 			<table class="listTable">
 				<th:block th:each="dvo : ${list}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
+						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
 						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd hh:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
@@ -83,22 +104,25 @@
 					<tr>
 						<td>
 							<div class="container" style="display: flex;">
-								<div style="position: relative; top: 60px; width: 35px;">
+								<div style="position: relative; top: 100px; width: 35px;">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-arrow-left-circle"></i></button>
 								</div>
 								<div class="pic" style="overflow: hidden;">
 									<th:block th:each="item: ${#numbers.sequence(1, dvo.img_count)}" >
-										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='/images/noimg.jpg'" width="auto" height="150"/>
+										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="220"/>
 									</th:block>
 								</div>
-								<div style="position: relative; top: 60px; width: 35px;">
+								<div style="position: relative; top: 100px; width: 35px;">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-arrow-right-circle"></i></button>
 								</div>
 							</div>
 						</td>
 						<td colspan="2">
-							<div class="map">구글 지도</div>
-							
+							<div class="location"
+					             th:data-latitude="${dvo.latitude}" 
+					             th:data-longitude="${dvo.longitude}">
+					        </div>
+        					<p th:text="${dvo.address}"></p>
 						</td>
 					</tr>
 					<tr style="height: 10px;">
@@ -108,12 +132,15 @@
 						<td>[[${dvo.info}]]</td>
 						<td>&nbsp;</td>
 					</tr>
-					<tr style="border-bottom: 1px solid grey;">
+					<tr style="border-bottom: 1px solid lightgrey;">
 						<td colspan="3" style="text-align: right;">
 							<form th:action="@{/}">
 								<input type="submit" class="detailAdd" value="내 일정 추가" />
 							</form>
 						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
