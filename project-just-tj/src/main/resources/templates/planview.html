@@ -89,7 +89,7 @@
 		<div class="listBox">
 			<div class="titleBox">
 				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]</div>
-				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
+				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share" style="background: white; margin-right: 10px;"></i></div>
 			</div>
 			<table class="listTable">
 				<th:block th:each="dvo : ${list}">
@@ -103,17 +103,17 @@
 					</tr>
 					<tr>
 						<td>
-							<div class="container" style="display: flex;">
-								<div style="position: relative; top: 100px; width: 35px;">
-									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-arrow-left-circle"></i></button>
+							<div class="container">
+								<div style="position: relative; top: 110px; width: 35px;">
+									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-caret-left-fill"></i></button>
 								</div>
 								<div class="pic" style="overflow: hidden;">
 									<th:block th:each="item: ${#numbers.sequence(1, dvo.img_count)}" >
-										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="220"/>
+										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="250"/>
 									</th:block>
 								</div>
-								<div style="position: relative; top: 100px; width: 35px;">
-									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-arrow-right-circle"></i></button>
+								<div style="position: relative; top: 110px; width: 35px;">
+									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-caret-right-fill"></i></button>
 								</div>
 							</div>
 						</td>
@@ -122,7 +122,6 @@
 					             th:data-latitude="${dvo.latitude}" 
 					             th:data-longitude="${dvo.longitude}">
 					        </div>
-        					<p th:text="${dvo.address}"></p>
 						</td>
 					</tr>
 					<tr style="height: 10px;">

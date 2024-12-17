@@ -27,92 +27,8 @@
 				return false;
 			}
 		})
-		// 사진 슬라이드
-		$(document).ready(function() {
-            $('.container').each(function() {
-                var $container = $(this);
-                var $images = $container.find('.pic img');
-                var index = 0;
-                function updateButtons() {
-                    $container.find('#next').toggle(index < $images.length - 1);
-                    $container.find('#prev').toggle(index > 0);
-                }
-                $container.find('#next').on('click', function() {
-                	if (index < $images.length - 1) {
-                        $images.eq(index).hide();
-                        index++;
-                        $images.eq(index).show();
-                    }
-                    updateButtons();
-                });
-                $container.find('#prev').on('click', function () {
-                    if (index > 0) {
-                        $images.eq(index).hide();
-                        index--;
-                        $images.eq(index).show();
-                    }
-                    updateButtons();
-                });
-                $images.hide().eq(index).show();
-                updateButtons();
-            });
-            // 방문날 자동화
-            const initialLocaltime = $('#visit_date').val();
-            $('#whatday').on('change', function() {
-                const currentLocaltime = new Date(initialLocaltime);
-                const selectedDays = parseInt($(this).val(), 10);
-                currentLocaltime.setDate(currentLocaltime.getDate() + selectedDays-1);
-                const formattedDateTime = currentLocaltime.toISOString().slice(0, 16);
-                $('#visit_date').val(formattedDateTime);
-            });
-            $('#whatday').trigger('change');
-        });
-		// 이미지 미리보기
-		$("#file").on('change',function(){
-			$("#previewBox").empty();
-			var input = document.getElementById("file");
-			var files = input.files;
-			var filesArr = Array.prototype.slice.call(files);
-			var a = 0;
-			for (var i=0; i < files.length; i++) {
-			var reader = new FileReader();
-			reader.readAsDataURL(files[i]);
-			reader.onloadend = function(e) {
-				var lastModified = files[a].lastModified;
-		       $("#previewBox").append('<div class="img_div" id="'+lastModified+'"><div class="i_div"><i class="bi bi-x-square" key="'+lastModified+'"></i></div><img id="view" src="'+e.target.result+'" class="img_div_img"/></div>');
-		       a++;
-		    }
-		}
-		}); 
-		// 미리보기에서 선택 삭제
-		$(document).on("click", ".i_div", function(e){
-			var input = $("#file").prop('files');
-			const dataTranster = new DataTransfer();
-			var target = e.target;
-			var removeId = $(target).attr("key");
-			Array.from(input).filter(file => file.lastModified != removeId)
-			.forEach(file => {
-				dataTranster.items.add(file);
-			});
-			$("#file")[0].files = dataTranster.files;
-			if (dataTranster.files.length == 0) {        
-	        	$("#fileReset").hide();
-	        }
-			$("#"+removeId).remove();
-			var input = $("file")[0].files;	
-		}); 
 	})
-	// 멀티파일 업로드 체크
-	function fileCheck(event) {
-            const maxFiles = 5; 
-            const input = event.target;
-            const files = input.files;
-
-            if (files.length > maxFiles) {
-                alert(`${maxFiles} 개까지 첨부할 수 있습니다`);
-                input.value = '';
-            }
-        }
+	
 	$(document).ready(function() {
 	    let map;
 	    let marker;
@@ -176,7 +92,6 @@
                         $('#latitude').val(location.lat());
                         $('#longitude').val(location.lng());
                         $('#address').val(results[0].formatted_address);
-                        $('#name').val(results[0].name);
 	                    // 정보창 표시
 	                    infowindow.setContent(
 	                        '<div><strong>' + results[0].name + '</strong><br>' +
@@ -243,35 +158,19 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]</div>
-				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
+				<div style="font-size: 18pt; font-weight: bold;">[[${todoVO.todo_title}]]</div>
+				<div style="line-height: 35px;">[[${#dates.format(todoVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<table class="listTable">
 				<th:block th:each="dvo, stat : ${list}">
 					<tr>
 						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
-						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
 					<tr style="height: 10px;">
 						<td></td>
 					</tr>
 					<tr>
-						<td>
-							<div class="container">
-								<div style="position: relative; top: 110px; width: 35px;">
-									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-caret-left-fill"></i></button>
-								</div>
-								<div class="pic" style="overflow: hidden;">
-									<th:block th:each="item: ${#numbers.sequence(1, dvo.img_count)}" >
-										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="250"/>
-									</th:block>
-								</div>
-								<div style="position: relative; top: 110px; width: 35px;">
-									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-caret-right-fill"></i></button>
-								</div>
-							</div>
-						</td>
 						<td colspan="2">
 							<div class="location"
 					             th:data-latitude="${dvo.latitude}" 
@@ -286,9 +185,9 @@
 						<td>[[${dvo.info}]]</td>
 						<td>&nbsp;</td>
 						<td style="text-align: right;">
-							<form th:action="@{/deleteDetail}" method="post" class="deleteForm">
-								<input type="hidden" name="plan_id" th:value="${dvo.plan_id}"/>
-								<input type="hidden" name="detail_id" th:value="${dvo.detail_id}"/>
+							<form th:action="@{/deleteTodoList}" method="post" class="deleteForm">
+								<input type="hidden" name="todo_id" th:value="${dvo.todo_id}"/>
+								<input type="hidden" name="todo_list_id" th:value="${dvo.todo_list_id}"/>
 								<input type="submit" class="btn btn-secondary btn-sm" value="삭제"/>
 							</form>
 						</td>
@@ -305,14 +204,15 @@
 				<button class="btn btn-primary btn-sm" style="margin-right: 20px; font-weight: bold;">+</button>
 			</div>
 			<div class="detailBox">
-				<form th:action="@{/detailAdd}" method="post" id="addForm" enctype="multipart/form-data">
-					<input type="hidden" name="plan_id" th:value="${planVO.plan_id}"/>
+				<form th:action="@{/todoListAdd}" method="post" id="addForm">
+					<input type="hidden" name="todo_id" th:value="${todoVO.todo_id}"/>
 					<select name="whatday" id="whatday" onchange="updateDateTime()" style="width: 40px;">
-						<option th:each="i : ${#numbers.sequence(1, planVO.days)}" th:value="${i}" th:text="${i}"></option>
+						<option th:each="i : ${#numbers.sequence(1, todoVO.days)}" th:value="${i}" th:text="${i}"></option>
 					</select>
 					<span>일차</span>
-					<input type="datetime-local" name="visit_date" id="visit_date" placeholder="방문시간" th:value="${localtime}" style="width: 200px;"/>
-					<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
+					<div>
+						<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
+					</div>
 					<div id="search-container">
 				        <input type="text" id="search-input" name="spot" size="50" placeholder="장소를 검색하세요">
 				        <button id="search-button" class="btn btn-info btn-sm">검색</button>
@@ -321,13 +221,6 @@
 				    <input type="hidden" id="latitude" name="latitude">
 		            <input type="hidden" id="longitude" name="longitude">
 		            <input type="hidden" id="address" name="address">
-		            <input type="hidden" id="name" name="name">
-					<div>
-						<input type="file" name="file" id="file" accept=".jpg,.png,.gif,.JPG,.jpeg" onchange="fileCheck(event)" multiple="multiple"/>
-					</div>
-					<div style="width: 600px;">
-						<div class="form-group" id="previewBox" style="display: flex;"></div>
-					</div>
 					<div style="margin: 5px auto;">
 						<textarea name="info" id="info" cols="82" rows="3" placeholder="설명"></textarea>
 					</div>

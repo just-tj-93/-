@@ -7,21 +7,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
 
 @Data
-public class PlanVO {
+public class TodoVO {
 	
-	private int plan_id;
-	private String title;
-	private String subtitle;
-	private String country;
-	private Date reg_date;
-	private int likeit;
-	private String city;
+	private int todo_id;
 	private int user_id;
-	private int days;
+	private String todo_title;
+	private Date reg_date;
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private Date start_date;
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private Date end_date;
-	
-	private String user_name;
+	private int days;
+	private String country;
+	private String city;
 }

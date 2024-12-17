@@ -32,19 +32,34 @@
 		</div>
 	</nav>
 	<section class="bg">
+		<div class="searchBox">
+			<form th:action="@{/}" method="get" class="planSearch">
+				<input type="hidden" name="p" th:value="${commVO.p}" />
+				<input type="hidden" name="s" th:value="${commVO.s}" />
+				<input type="hidden" name="b" th:value="${commVO.b}" />
+				<select name="field" id="field">
+					<option value="title">제목</option>
+					<option value="country">나라</option>
+					<option value="city">도시</option>
+				</select>
+				<input type="text" name="search" id="search" size="30"/>
+				<input type="submit" id="submit" value="검색"/>
+			</form>
+		</div>
 		<div class="listBox">
 			<table class="listTable">
 				<th:block th:each="pv : ${pv.list}">
 					<tr>
-						<td class="title" th:onclick="location.href='/planview?plan_id=[[${pv.plan_id}]]'">[[${pv.title}]]</td>
+						<td class="title" th:onclick="location.href='/planview?plan_id=[[${pv.plan_id}]]'">
+						[[${pv.title}]]&nbsp;&nbsp; <span style="font-style: italic; font-size: 12pt;">by [[${pv.user_name}]]</span></td>
 						<td class="regdate">[[${#dates.format(pv.reg_date,'yy/MM/dd')}]]</td>
 					</tr>
 					<tr style="border-bottom: 1px solid lightgrey;">
 						<td class="subtitle">[[${pv.subtitle}]]</td>
 						<td><div class="like">추천 [[${pv.likeit}]]</div></td>
 					</tr>
-					<tr>
-						<td>&nbsp;</td>
+					<tr style="height: 10px;">
+						<td></td>
 					</tr>
 				</th:block>
 			</table>

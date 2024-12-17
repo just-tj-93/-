@@ -2,16 +2,16 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.just.tj.dao.PlanDAO">
+<mapper namespace="kr.just.tj.dao.TodoDAO">
 	<!-- 메인 글 저장 -->
-	<insert id="insert" parameterType="PlanVO">
-		insert into plan
-		(plan_id, user_id, title, subtitle, country, likeit, reg_date,city,days,start_date,end_date)
+	<insert id="insert" parameterType="TodoVO">
+		insert into todo
+		(todo_id, user_id, todo_title, reg_date, start_date, end_date, days,country,city)
 		values
-		(plan_id_seq.nextval,#{user_id},#{title},#{subtitle},#{country},#{likeit},SYSDATE,#{city},#{days},#{start_date},#{end_date})
+		(todo_id_seq.nextval,#{user_id},#{todo_title},SYSDATE,#{start_date},#{end_date},#{days},#{country},#{city})
 	</insert>
-	<select id="selectPlanCount" resultType="int" parameterType="hashmap">
-		select count(*) from plan
+	<select id="selectTodoCount" resultType="int" parameterType="hashmap">
+		select count(*) from todo
 		<where>
 			<choose>
 				<when test="search != null and search != '0'.toString()">
@@ -24,7 +24,7 @@
 		</where>
 	</select>
 	<!-- 한 페이지 얻기 -->
-	<select id="selectPlanList" parameterType="hashmap" resultType="PlanVO">
+	<select id="selectTodoList" parameterType="hashmap" resultType="TodoVO">
 		select 
 			R.*
 		from
@@ -32,7 +32,7 @@
 			select 
 				rownum rnum, Q.*
 			from
-				(select * from plan p join user_main u on p.user_id=u.user_id 
+				(select * from todo t join user_main u on t.user_id=u.user_id 
 				<where>
 					<choose>
 						<when test="search != null and search != '0'.toString()">
@@ -43,7 +43,7 @@
 						</when>
 					</choose>
 				</where>
-				order by plan_id desc) Q
+				order by todo_id desc) Q
 			where
 			<![CDATA[
 				rownum<=#{endNo}
@@ -54,13 +54,13 @@
 			rnum >= #{startNo}
 		]]>
 	</select>
-	<select id="selectPlanByUserId" parameterType="int" resultType="PlanVO">
-		select * from plan where user_id=#{user_id} order by plan_id desc
+	<select id="selectTodoByUserId" parameterType="int" resultType="TodoVO">
+		select * from todo where user_id=#{user_id} order by todo_id desc
 	</select>
-	<select id="selectPlanByPlanId" parameterType="int" resultType="PlanVO">
-		select * from plan where plan_id=#{plan_id}
+	<select id="selectTodoByTodoId" parameterType="int" resultType="TodoVO">
+		select * from todo where todo_id=#{todo_id}
 	</select>
 	<delete id="delete" parameterType="int">
-		delete plan where plan_id=#{plan_id}
+		delete todo where todo_id=#{todo_id}
 	</delete>
 </mapper>  

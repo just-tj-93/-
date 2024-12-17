@@ -44,11 +44,12 @@ header {
 	position: fixed;
 	top: 0; left: 0;
 	width: 100%; height: 100%;
+	overflow: scroll;
 }
 .listBox {
 	position: relative;
 	margin: 160px auto;
-	width: 750px;
+	width: 900px;
 	height: 300px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
@@ -57,7 +58,7 @@ header {
 }
 .listTable {
 	width: 700px;
-	margin:20px auto;
+	margin: 20px auto;
 }
 .title {
 	font-size: 14pt;
@@ -68,7 +69,7 @@ header {
 }
 .add {
 	position: relative;
-	left: 42%;
+	width: 148px;
 	margin: 0px auto;
 }
 a {

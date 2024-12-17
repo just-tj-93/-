@@ -41,13 +41,13 @@
 	<section class="bg">
 		<div class="listBox">
 			<table class="listTable">
-				<th:block th:each="list : ${plist}">
+				<th:block th:each="list : ${tlist}">
 					<tr>
-						<td class="title" th:onclick="|location.href='@{/myplanview(plan_id=${list.plan_id})}'|">[[${list.title}]]</td>
+						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]]</td>
 						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
 						<td>
-							<form th:action="@{/deleteOk}" method="post" class="deleteForm">
-								<input type="hidden" name="plan_id" th:value="${list.plan_id}"/>
+							<form th:action="@{/todoDeleteOk}" method="post" class="deleteForm">
+								<input type="hidden" name="todo_id" th:value="${list.todo_id}"/>
 								<input type="submit" value="삭제" class="btn btn-dark btn-sm"/>
 							</form>
 						</td>
@@ -58,7 +58,7 @@
 				</th:block>
 			</table>
 			<div class="add">
-				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold;" onclick="location.href='/form'">TODO 일정추가</button>
+				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold; font-size: 14pt;" onclick="location.href='/todoForm'">TODO 일정추가</button>
 			</div>
 		</div>
 	</section>

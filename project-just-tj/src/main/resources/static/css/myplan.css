@@ -57,7 +57,7 @@ header {
 .listBox {
 	position: relative;
 	margin: 160px auto;
-	width: 900px;
+	width: 920px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -79,11 +79,12 @@ header {
 	margin: 20px auto;
 }
 .container {
-	width: 500px;
+	width: 480px;
+	display: flex;
 }
 .pic {
 	width: 350px;
-	height: 235px;
+	height: 250px;
 }
 img {
 	border-radius: 10px;
@@ -117,12 +118,20 @@ img {
 }
 
 .detailBox {
+	position: relative;
+	width:600px;
 	display: none;
-	margin-left: 20px;
+	margin: 20px auto;
 }
-
+.location {
+	width: 360px;
+	height: 250px;
+	margin-top: 5px;
+	border-radius: 10px;
+	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
 #previewBox img {
-	width: 110px;
+	width: 120px;
 	height: 110px;
 	border: 1px solid #ffffff;
 }
@@ -144,17 +153,12 @@ a:visited {
 }
 
 #map {
-	height: 250px;
-	width: 90%;
+	height: 280px;
+	width: 600px;
+	margin-bottom: 10px;
 }
 
 #search-container {
-	margin: 20px 0;
+	margin: 10px auto;
 }
-.location {
-	width: 300px;
-	height: 180px;
-	margin-top: 5px;
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
+

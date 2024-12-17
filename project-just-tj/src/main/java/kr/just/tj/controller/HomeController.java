@@ -2,6 +2,8 @@ package kr.just.tj.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +37,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import kr.just.tj.service.DetailService;
 import kr.just.tj.service.PlanService;
+import kr.just.tj.service.TodoListService;
+import kr.just.tj.service.TodoService;
 import kr.just.tj.service.UserService;
 import kr.just.tj.vo.CommVO;
 import kr.just.tj.vo.DetailVO;
 import kr.just.tj.vo.PagingVO;
 import kr.just.tj.vo.PlanVO;
+import kr.just.tj.vo.TodoListVO;
+import kr.just.tj.vo.TodoVO;
 import kr.just.tj.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -97,6 +103,10 @@ public class HomeController {
 	private PlanService planService;
 	@Autowired
 	private DetailService detailService;
+	@Autowired
+	private TodoService todoService;
+	@Autowired
+	private TodoListService todoListService;
 
 	// 로그인 여부 확인
 	public boolean isUserLoggedin() {
@@ -126,6 +136,7 @@ public class HomeController {
 		model.addAttribute("pv", pv);
 		model.addAttribute("isLogin", isLogin);
 		model.addAttribute("uservo", userVO);
+		model.addAttribute("commVO", commVO);
 		model.addAttribute("field", field);
 		model.addAttribute("search", search);
 		model.addAttribute("newLine", "\n");
@@ -163,13 +174,34 @@ public class HomeController {
 		PlanVO planVO = planService.selectPlanByPlanId(plan_id);
 		boolean isLogin = isUserLoggedin();
 		UserVO userVO = getUserInfo();
+		ZoneId zoneId = ZoneId.of("Asia/Seoul");
+		LocalDateTime localtime =  planVO.getStart_date().toInstant().atZone(zoneId).toLocalDateTime();
 		model.addAttribute("list", list);
 		model.addAttribute("isLogin", isLogin);
 		model.addAttribute("uservo", userVO);
 		model.addAttribute("planVO", planVO);
+		model.addAttribute("localtime", localtime);
 		model.addAttribute("newLine", "\n");
 		model.addAttribute("br", "<br>");
 		return "myplanview";
+	}
+	@GetMapping("/mytodoview")
+	public String myTodoView(@RequestParam(required = false, name = "todo_id") int todo_id,
+			@ModelAttribute CommVO commVO, Model model) {
+		List<TodoListVO> list = todoListService.selectByTodoId(todo_id);
+		TodoVO todoVO = todoService.selectTodoByTodoId(todo_id);
+		boolean isLogin = isUserLoggedin();
+		UserVO userVO = getUserInfo();
+		ZoneId zoneId = ZoneId.of("Asia/Seoul");
+		LocalDateTime localtime =  todoVO.getStart_date().toInstant().atZone(zoneId).toLocalDateTime();
+		model.addAttribute("list", list);
+		model.addAttribute("isLogin", isLogin);
+		model.addAttribute("uservo", userVO);
+		model.addAttribute("todoVO", todoVO);
+		model.addAttribute("localtime", localtime);
+		model.addAttribute("newLine", "\n");
+		model.addAttribute("br", "<br>");
+		return "mytodoview";
 	}
 	@GetMapping("/detailAdd")
 	public String detailAddGet() {
@@ -224,6 +256,19 @@ public class HomeController {
         }
 		return "redirect:/myplanview?plan_id=" + detailVO.getPlan_id();
 	}
+	@GetMapping("/todoListAdd")
+	public String todoListAddGet() {
+		return "redirect:/todo";
+	}
+	@PostMapping("/todoListAdd")
+	public String todoListAddPost(@RequestParam(name = "todo_id") int todo_id,
+			@ModelAttribute TodoListVO todoListVO, Model model
+			) {
+		
+		todoListService.insert(todoListVO);
+		log.info("저장 :"  + todoListVO);
+		return "redirect:/mytodoview?todo_id=" + todoListVO.getTodo_id();
+	}
 	
 	@GetMapping("/deleteDetail")
 	public String detailDeleteGet() {
@@ -261,20 +306,12 @@ public class HomeController {
 		}
 		return "redirect:/myplanview?plan_id=" + plan_id;
 	}
-	@GetMapping("/todo")
-	public String todo(
-			Model model) {
-		model.addAttribute("newLine", "\n");
-		model.addAttribute("br", "<br>");
-		
-		return "todo";
-	}
+	
 	@GetMapping("/my")
 	public String my(HttpSession session,RedirectAttributes redirectAttributes,
 			Model model) {
 		// 사용자 로그인 여부 확인
 			Integer user_id = (Integer) session.getAttribute("user_id");
-			System.out.println("세션 아이디:" + user_id);
 			if (user_id == null) {
 				redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
 				return "redirect:/login"; // 로그인 페이지로 리다이렉트
@@ -287,7 +324,6 @@ public class HomeController {
 	public String form(HttpSession session,RedirectAttributes redirectAttributes,
 			Model model, @ModelAttribute UserVO userVO) {
 		Integer user_id = (Integer) session.getAttribute("user_id");
-		System.out.println("세션 아이디:" + user_id);
 		if (user_id == null) {
 			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
 			return "redirect:/login"; // 로그인 페이지로 리다이렉트
@@ -295,6 +331,7 @@ public class HomeController {
 		model.addAttribute("user_id",userVO.getUser_id());
 		return "form";
 	}
+	
 	@GetMapping("/formOk")
 	public String formOkGet() {
 		return "redirect:/my";
@@ -317,5 +354,53 @@ public class HomeController {
 	public String deleteOkPost(@RequestParam(name = "plan_id") int plan_id) {
 		planService.delete(plan_id);
 		return "redirect:/my";
+	}
+	
+	@GetMapping("/todo")
+	public String todo(HttpSession session,RedirectAttributes redirectAttributes,
+			Model model) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
+		List<TodoVO> tlist = todoService.selectTodoByUserId(user_id);
+		model.addAttribute("tlist", tlist);
+		return "todo";
+	}
+	@GetMapping("/todoForm")
+	public String todoForm(HttpSession session,RedirectAttributes redirectAttributes,
+			Model model, @ModelAttribute UserVO userVO) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
+		model.addAttribute("user_id",userVO.getUser_id());
+		return "todoForm";
+	}
+	
+	@GetMapping("/todoFormOk")
+	public String todoFormOkGet() {
+		return "redirect:/todo";
+	}
+	@PostMapping("/todoFormOk")
+	public String todoFormOkPost(HttpSession session,RedirectAttributes redirectAttributes,
+			@ModelAttribute TodoVO todoVO) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		todoVO.setUser_id(user_id);
+		long diff = todoVO.getEnd_date().getTime() - todoVO.getStart_date().getTime();
+		todoVO.setDays((int)diff/(1000*60*60*24)+1);
+		todoService.insert(todoVO);
+		return "redirect:/todo";
+	}
+	@GetMapping("/todoDeleteOk")
+	public String todoDeleteOkGet() {
+		return "redirect:/todo";
+	}
+	@PostMapping("/todoDeleteOk")
+	public String todoDeleteOkPost(@RequestParam(name = "todo_id") int todo_id) {
+		todoService.delete(todo_id);
+		return "redirect:/todo";
 	}
 }

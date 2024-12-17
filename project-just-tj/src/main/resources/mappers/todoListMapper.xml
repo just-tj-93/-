@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.just.tj.dao.TodoListDAO">
+	<!-- 상세일정 저장 -->
+	<insert id="insert" parameterType="TodoListVO">
+	<selectKey resultType="int" keyProperty="todo_list_id" order="BEFORE">
+		select todo_list_id_seq.nextval from dual
+	</selectKey>
+		insert into todo_list
+		(todo_list_id,todo_id,whatday,reg_date, spot,time_info,info,latitude,longitude,address)
+		values
+		(#{todo_list_id},#{todo_id},#{whatday},SYSDATE,#{spot},#{time_info},#{info},#{latitude,jdbcType=DOUBLE},#{longitude,jdbcType=DOUBLE},#{address,jdbcType=VARCHAR})
+	</insert>
+	<select id="selectTodoListCount" resultType="int" parameterType="hashmap">
+		select count(*) from todo_list
+		<where>
+			<choose>
+				<when test="search != null and search != '0'.toString()">
+					${field} like '%'||#{search}||'%'
+				</when>
+				<when test="search == 0">
+					${field} like #{search}
+				</when>
+			</choose>
+		</where>
+	</select>
+	<!-- 한 페이지 얻기 -->
+	<select id="selectTodoList" parameterType="hashmap" resultType="TodoListVO">
+		select 
+			R.*
+		from
+		(
+			select 
+				rownum rnum, Q.*
+			from
+				(select * from todo_list
+				<where>
+					<choose>
+						<when test="search != null and search != '0'.toString()">
+							${field} like '%'||#{search}||'%'
+						</when>
+						<when test="search == 0">
+							${field} like #{search}
+						</when>
+					</choose>
+				</where>
+				order by todo_list_id asc) Q
+			where
+			<![CDATA[
+				rownum<=#{endNo}
+				]]>
+		) R
+		where
+		<![CDATA[
+			rnum >= #{startNo}
+		]]>
+	</select>
+	<select id="selectByTodoId" parameterType="int" resultType="TodoListVO">
+		select * from todo_list t
+		join todo d on t.todo_id=d.todo_id
+		where
+		 t.todo_id=#{todo_id}
+		 order by t.whatday asc
+	</select>
+	<delete id="deleteTodoList" parameterType="int">
+		delete todo_list where todo_list_id=#{todo_list_id}
+	</delete>
+</mapper>  
