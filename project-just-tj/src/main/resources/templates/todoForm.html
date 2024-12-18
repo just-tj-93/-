@@ -9,7 +9,7 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/form.css">
+<link rel="stylesheet" type="text/css" href="css/todoform.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
 	$(function(){
@@ -81,7 +81,7 @@
 	</nav>
 	<section class="bg">
 		<div class="listBox">
-		<div>TODO 일정 추가</div>
+		<div style="text-align: center; font-weight: bold; font-size: 16pt; margin-top: 10px;">TODO 일정 추가</div>
 			<div class="formBox">
 				<form th:action="@{/todoFormOk}" method="post" class="form">		
 					<input type="text" placeholder="일정 제목" name="todo_title" size="92" style="margin-bottom: 10px; height: 40px;"/>
@@ -104,8 +104,8 @@
 						
 					</div>
 					<div style="text-align: right;">
-						<input type="submit" value="저장"/>
-						<input type="reset" value="초기화" class="reset"/>
+						<input type="submit" class="btn btn-success btn-sm" value="저장"/>
+						<input type="reset" class="btn btn-dark btn-sm" value="초기화"/>
 					</div>
 				</form>
 			</div>

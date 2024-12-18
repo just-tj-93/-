@@ -62,6 +62,9 @@
 		 plan_id=#{plan_id}
 		 order by whatday asc, visit_date asc
 	</select>
+	<select id="selectByDetailId" parameterType="int" resultType="DetailVO">
+		select * from detail where detail_id=#{detail_id}
+	</select>
 	<delete id="deleteDetail" parameterType="int">
 		delete detail where detail_id=#{detail_id}
 	</delete>

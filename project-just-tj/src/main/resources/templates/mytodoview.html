@@ -10,22 +10,26 @@
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/myplan.css">
+<link rel="stylesheet" type="text/css" href="css/mytodo.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
 	$(function(){
-		$(".plusBox").click(function(){
+		$("#addBtn").click(function(){
 			$(".detailBox").show();
-			$(".plusBox").hide();
+			$("#addBtn").hide();
 		})
-		$(".back").click(function(){
+		$("#back").click(function(){
 			$(".detailBox").hide();
-			$(".plusBox").show();
+			$("#addBtn").show();
 		})
 		$(".deleteForm").submit(function(){
 			if(!confirm('정말 삭제하시겠습니까?')){
 				return false;
 			}
+		})
+		$(".spot").click(function(){
+			$(this).closest('tr').next('tr').find('.location').toggle();
+			$(this).closest('tr').next('tr').find('.address').toggle();
 		})
 	})
 	
@@ -105,6 +109,7 @@
 	            }
 	        });
 	 	}
+	 
         $('#addForm').submit(function(e) {
             if (!$('#latitude').val() || !$('#longitude').val()) {
                 e.preventDefault();
@@ -114,6 +119,27 @@
         });
         // 지도 초기화
         initMap();
+        // 체크박스 로직
+        $('input[type="checkbox"]').change(function() {
+            var id = $(this).data("id");
+            var checked = $(this).is(":checked");
+
+            $.ajax({
+                url: '/updateChecked',
+                type: 'POST',
+                data: {
+                    todo_list_id: id,
+                    checked: checked
+                },
+                success: function(response) {
+                    
+                },
+                error: function() {
+                    
+                }
+            });
+        });
+        
     });
 	function initMap() {
         /* 데이터가 있는 HTML 요소들로부터 지도 초기화 정보 불러오기 */
@@ -158,39 +184,43 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${todoVO.todo_title}]]</div>
+				<div style="font-size: 20pt; font-weight: bold;">[[${todoVO.todo_title}]] <span style="font-size: 13pt;">([[${#dates.format(todoVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(todoVO.end_date,'YY/MM/dd')}]])</span> </div>
 				<div style="line-height: 35px;">[[${#dates.format(todoVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
+			<div th:each="item : ${#numbers.sequence(1, todoVO.days)}">
+			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>
 			<table class="listTable">
-				<th:block th:each="dvo, stat : ${list}">
+				<colgroup>
+                  <col width="41%" />
+                  <col width="40%" />
+                  <col width="5%" />
+                  <col width="5%" />
+                </colgroup>
+				<th:block th:each="dvo, stat : ${list}" th:if="${dvo.whatday}== ${item}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
-						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
-					</tr>
-					<tr style="height: 10px;">
-						<td></td>
+						<td style="font-weight: bold; font-size: 15pt;">[[${stat.index+1}]]. <span class="spot">[[${dvo.spot}]]</span> <span th:if="${dvo.time_info} != null" class="timeInfo">([[${dvo.time_info}]])</span> </td>
+						<td>- [[${dvo.info}]]</td>
+						<td>
+							<div class="form-check form-switch">
+								<input type="checkbox" class="form-check-input" th:data-id="${dvo.todo_list_id}" th:checked="${dvo.checked}=='Y'"/>
+							</div>
+						</td>
+						<td style="text-align: right;">
+							<form th:action="@{/deleteTodoList}" method="post" class="deleteForm">
+								<input type="hidden" name="todo_id" th:value="${dvo.todo_id}"/>
+								<input type="hidden" name="todo_list_id" th:value="${dvo.todo_list_id}"/>
+								<input type="submit" class="btn btn-secondary-outline btn-sm" value="X"/>
+							</form>
+						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
+						<td colspan="1">
 							<div class="location"
 					             th:data-latitude="${dvo.latitude}" 
 					             th:data-longitude="${dvo.longitude}">
 					        </div>
 						</td>
-					</tr>
-					<tr style="height: 10px;">
-						<td></td>
-					</tr>
-					<tr>
-						<td>[[${dvo.info}]]</td>
-						<td>&nbsp;</td>
-						<td style="text-align: right;">
-							<form th:action="@{/deleteTodoList}" method="post" class="deleteForm">
-								<input type="hidden" name="todo_id" th:value="${dvo.todo_id}"/>
-								<input type="hidden" name="todo_list_id" th:value="${dvo.todo_list_id}"/>
-								<input type="submit" class="btn btn-secondary btn-sm" value="삭제"/>
-							</form>
-						</td>
+						<td colspan="2" class="address">[[${dvo.address}]]</td>
 					</tr>
 					<tr style="border-bottom: 1px solid lightgrey;">
 						<td>&nbsp;</td>
@@ -200,8 +230,9 @@
 					</tr>
 				</th:block>
 			</table>
+			</div>
 			<div class="plusBox">
-				<button class="btn btn-primary btn-sm" style="margin-right: 20px; font-weight: bold;">+</button>
+				<button class="btn btn-primary btn-sm" id="addBtn" style="margin-right: 20px; font-weight: bold;">+</button>
 			</div>
 			<div class="detailBox">
 				<form th:action="@{/todoListAdd}" method="post" id="addForm">
@@ -226,7 +257,7 @@
 					</div>
 					<div style="text-align: right;">
 						<input type="submit" class="btn btn-success btn-sm" value="저장"/>
-						<input type="button" class="btn btn-secondary btn-sm" value="취소"/>
+						<input type="button" id="back" class="btn btn-secondary btn-sm" value="취소"/>
 					</div>
 				</form>
 			</div>

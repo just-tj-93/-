@@ -69,7 +69,6 @@ public class TodoListServiceImpl implements TodoListService{
 		try {
 			list = todoListDAO.selectByTodoId(todo_id);
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 		}
 		return list;
@@ -79,6 +78,15 @@ public class TodoListServiceImpl implements TodoListService{
 	public void deleteTodoList(int todo_list_id) {
 		try {
 			todoListDAO.deleteTodoList(todo_list_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void checked(TodoListVO todoListVO) {
+		try {
+			todoListDAO.checked(todoListVO);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

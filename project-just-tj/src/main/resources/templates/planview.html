@@ -10,7 +10,7 @@
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/view.css">
+<link rel="stylesheet" type="text/css" href="css/planview.css">
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
 	$(function(){ 
@@ -43,7 +43,50 @@
                 $images.hide().eq(index).show();
                 updateButtons();
             });
+            // TODO 일정 추가 팝업 페치
+            $('select[name="todo_id"]').change(function() {
+                var selectedTodoId = $(this).val();
+                if (selectedTodoId) {
+                    $.ajax({
+                        url: '/fetchRelatedDays',
+                        type: 'GET',
+                        data: { todo_id: selectedTodoId },
+                        success: function(response) {
+                            var secondSelect = $('select[name="whatday"]');
+                            secondSelect.empty();
+                            secondSelect.append('<option value="">일차 선택</option>');
+                            for(var i=1; i<= response; i++) {
+                                var optionElement = $('<option></option>').attr('value', i).text(i + '일차');
+                                secondSelect.append(optionElement);
+                            }
+                        },
+                        error: function() {
+                            alert('관련 데이터를 가져오는데 실패했습니다.');
+                        }
+                    });
+                } else {
+                    $('select[name="whatday"]').empty().append('<option value="">일차 선택</option>');
+                }
+            });
+            $(".detailAdd").val("내 일정 추가");
+            $(".detailAdd").click(function() {
+            	var detailId = $(this).data("detailId");
+                $('input[name="detail_id"]').val(detailId); 
+            });
         });
+            
+		$(".detailAdd").click(function(){
+			$(".popUpBg").show();
+			$(".stockPopup").fadeIn(200);
+		  })
+		  $("#stockClose").click(function(){
+			  $(".popUpBg").hide();
+			  $(".stockPopup").fadeOut(200);
+		  })
+		  $("#categorySet").click(function(){
+			$(".popUpBg").show();
+			$(".catePopup").fadeIn(200);
+		  })
 	});
 	function initMap() {
         /* 데이터가 있는 HTML 요소들로부터 지도 초기화 정보 불러오기 */
@@ -89,7 +132,7 @@
 		<div class="listBox">
 			<div class="titleBox">
 				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]</div>
-				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share" style="background: white; margin-right: 10px;"></i></div>
+				<div style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share-fill" style="margin-right: 10px;"></i></div>
 			</div>
 			<table class="listTable">
 				<th:block th:each="dvo : ${list}">
@@ -131,14 +174,12 @@
 						<td>[[${dvo.info}]]</td>
 						<td>&nbsp;</td>
 					</tr>
-					<tr style="border-bottom: 1px solid lightgrey;">
+					<tr>
 						<td colspan="3" style="text-align: right;">
-							<form th:action="@{/}">
-								<input type="submit" class="detailAdd" value="내 일정 추가" />
-							</form>
+							<button type="button" class="detailAdd" th:data-detail-id="${dvo.detail_id}">내 일정 추가</button>
 						</td>
 					</tr>
-					<tr>
+					<tr style="border-bottom: 1px solid lightgrey;">
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -146,8 +187,31 @@
 					</tr>
 				</th:block>
 			</table>
-		
 		</div>
 	</section>
+		<!-- 일정추가 팝업 -->
+		<div class="popUpBg"></div>
+			<div class="stockPopup">
+				<div class="inBox">
+					<div style="display: flex; justify-content: space-between;">
+						<div style="font-weight: bold; font-size: 14pt;">내 일정에 추가</div>
+						<input type="button" class="btn btn-light btn-sm" id="stockClose" value="X"/>
+					</div>
+				</div>
+				<div class="formBox">
+					<form th:action="@{/addTodoOk}" method="post" class="stockForm">
+						<input type="hidden" name="detail_id" value=""/>
+						<input type="hidden" name="plan_id" th:value="${planVO.plan_id}"/>
+						<select name="todo_id" required="required">
+							<option value="">일정선택</option>
+							<option th:each="t : ${tlist}" th:text="${t.todo_title}" th:value="${t.todo_id}"></option>
+						</select>
+						<select name="whatday" required="required">
+							<option value="">일차선택</option>				
+						</select>
+						<input type="submit" class="btn btn-info btn-sm" value="추가"/>
+					</form>
+				</div>
+			</div>	
 </body>
 </html>

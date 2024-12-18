@@ -14,6 +14,7 @@ public interface TodoListDAO {
 	
 	void insert(TodoListVO todoListVO) throws SQLException;
 	void deleteTodoList(int todo_list_id) throws SQLException;
+	void checked(TodoListVO todoListVO) throws SQLException;
 	int selectTodoListCount(HashMap<String, String> map) throws SQLException;
 	List<TodoListVO> selectTodoList(HashMap<String, String> map) throws SQLException;
 	List<TodoListVO> selectByTodoId(int todo_id) throws SQLException;

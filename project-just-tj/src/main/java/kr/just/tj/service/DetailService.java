@@ -9,6 +9,7 @@ import kr.just.tj.vo.PagingVO;
 public interface DetailService {
 	void insert(DetailVO detailVO);
 	void deleteDetail(int detail_id);
+	DetailVO selectByDetailId(int detail_id);
 	int selectDetailCount(HashMap<String, String> map);
 	PagingVO<DetailVO> selectDetailList(int currentPage, int sizeOfPage, int sizeOfBlock, String field, String search);
 	List<DetailVO> selectByPlanId(int plan_id);

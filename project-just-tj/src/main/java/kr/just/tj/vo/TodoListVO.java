@@ -17,4 +17,6 @@ public class TodoListVO {
 	private Double latitude;
 	private Double longitude;
 	private String address;
+	private String checked;
+	
 }

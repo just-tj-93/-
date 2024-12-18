@@ -84,5 +84,16 @@ public class DetailServiceImpl implements DetailService{
 		}
 	}
 
+	@Override
+	public DetailVO selectByDetailId(int detail_id) {
+		DetailVO detailVO = null;
+		try {
+			detailVO = detailDAO.selectByDetailId(detail_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return detailVO;
+	}
+
 
 }

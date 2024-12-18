@@ -48,7 +48,7 @@ header {
 .listBox {
 	position: relative;
 	margin: 160px auto;
-	width: 750px;
+	width: 900px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);

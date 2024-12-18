@@ -9,9 +9,9 @@
 		select todo_list_id_seq.nextval from dual
 	</selectKey>
 		insert into todo_list
-		(todo_list_id,todo_id,whatday,reg_date, spot,time_info,info,latitude,longitude,address)
+		(todo_list_id,todo_id,whatday,reg_date, spot,time_info,info,latitude,longitude,address,checked)
 		values
-		(#{todo_list_id},#{todo_id},#{whatday},SYSDATE,#{spot},#{time_info},#{info},#{latitude,jdbcType=DOUBLE},#{longitude,jdbcType=DOUBLE},#{address,jdbcType=VARCHAR})
+		(#{todo_list_id},#{todo_id},#{whatday},SYSDATE,#{spot},#{time_info,jdbcType=VARCHAR},#{info},#{latitude,jdbcType=DOUBLE},#{longitude,jdbcType=DOUBLE},#{address,jdbcType=VARCHAR},'N')
 	</insert>
 	<select id="selectTodoListCount" resultType="int" parameterType="hashmap">
 		select count(*) from todo_list
@@ -62,9 +62,12 @@
 		join todo d on t.todo_id=d.todo_id
 		where
 		 t.todo_id=#{todo_id}
-		 order by t.whatday asc
+		 order by t.whatday asc, t.todo_list_id asc
 	</select>
 	<delete id="deleteTodoList" parameterType="int">
 		delete todo_list where todo_list_id=#{todo_list_id}
 	</delete>
+	<update id="checked" parameterType="TodoListVO">
+		update todo_list set checked=#{checked} where todo_list_id=#{todo_list_id}
+	</update>
 </mapper>  

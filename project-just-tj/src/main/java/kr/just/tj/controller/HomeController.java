@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -145,18 +146,20 @@ public class HomeController {
 		return "main";
 	}
 	@GetMapping("/planview")
-	public String planView(@RequestParam(required = false, name = "field") String field,
+	public String planView(HttpSession session,
+			@RequestParam(required = false, name = "field") String field,
 			@RequestParam(required = false, name = "search") String search,
 			@RequestParam(required = false, name = "plan_id") int plan_id,
 			@ModelAttribute CommVO commVO, Model model) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
 		PagingVO<DetailVO> dv = detailService.selectDetailList(commVO.getCurrentPage(), commVO.getSizeOfPage(), commVO.getSizeOfBlock(), field, search);
 		List<DetailVO> list = detailService.selectByPlanId(plan_id);
 		PlanVO planVO = planService.selectPlanByPlanId(plan_id);
 		boolean isLogin = isUserLoggedin();
 		UserVO userVO = getUserInfo();
-		
+		List<TodoVO> tlist = todoService.selectTodoByUserId(user_id);
+		model.addAttribute("tlist", tlist);
 		model.addAttribute("dv", dv);
-		model.addAttribute("currentDay", 2);
 		model.addAttribute("list", list);
 		model.addAttribute("isLogin", isLogin);
 		model.addAttribute("uservo", userVO);
@@ -167,9 +170,22 @@ public class HomeController {
 		model.addAttribute("br", "<br>");
 		return "planview";
 	}
+	@GetMapping("/fetchRelatedDays")
+    @ResponseBody
+    public int fetchRelatedData(@RequestParam("todo_id") int todo_id) {
+		TodoVO todoVO = todoService.selectTodoByTodoId(todo_id);
+        return todoVO.getDays();
+    }
+	
 	@GetMapping("/myplanview")
-	public String myPlanView(@RequestParam(required = false, name = "plan_id") int plan_id,
+	public String myPlanView(HttpSession session,RedirectAttributes redirectAttributes,
+			@RequestParam(required = false, name = "plan_id") int plan_id,
 			@ModelAttribute CommVO commVO, Model model) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
 		List<DetailVO> list = detailService.selectByPlanId(plan_id);
 		PlanVO planVO = planService.selectPlanByPlanId(plan_id);
 		boolean isLogin = isUserLoggedin();
@@ -186,8 +202,14 @@ public class HomeController {
 		return "myplanview";
 	}
 	@GetMapping("/mytodoview")
-	public String myTodoView(@RequestParam(required = false, name = "todo_id") int todo_id,
+	public String myTodoView(HttpSession session,RedirectAttributes redirectAttributes,
+			@RequestParam(required = false, name = "todo_id") int todo_id,
 			@ModelAttribute CommVO commVO, Model model) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
 		List<TodoListVO> list = todoListService.selectByTodoId(todo_id);
 		TodoVO todoVO = todoService.selectTodoByTodoId(todo_id);
 		boolean isLogin = isUserLoggedin();
@@ -203,6 +225,15 @@ public class HomeController {
 		model.addAttribute("br", "<br>");
 		return "mytodoview";
 	}
+	@PostMapping("/updateChecked")
+    public String updateChecked(@RequestParam("todo_list_id") int todo_list_id, @RequestParam("checked") boolean checked) {
+        TodoListVO todoListVO = new TodoListVO();
+        todoListVO.setTodo_list_id(todo_list_id);
+        todoListVO.setChecked(checked ? "Y" : "N");
+        todoListService.checked(todoListVO);
+        return "redirect:/";
+    }
+	
 	@GetMapping("/detailAdd")
 	public String detailAddGet() {
 		return "redirect:/my";
@@ -264,10 +295,15 @@ public class HomeController {
 	public String todoListAddPost(@RequestParam(name = "todo_id") int todo_id,
 			@ModelAttribute TodoListVO todoListVO, Model model
 			) {
-		
 		todoListService.insert(todoListVO);
 		log.info("저장 :"  + todoListVO);
 		return "redirect:/mytodoview?todo_id=" + todoListVO.getTodo_id();
+	}
+	@PostMapping("/deleteTodoList")
+	public String deleteTodo(@RequestParam(name = "todo_list_id") int todo_list_id,
+			@RequestParam(name = "todo_id") int todo_id) {
+		todoListService.deleteTodoList(todo_list_id);
+		return "redirect:/mytodoview?todo_id=" + todo_id;
 	}
 	
 	@GetMapping("/deleteDetail")
@@ -388,6 +424,10 @@ public class HomeController {
 	public String todoFormOkPost(HttpSession session,RedirectAttributes redirectAttributes,
 			@ModelAttribute TodoVO todoVO) {
 		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
 		todoVO.setUser_id(user_id);
 		long diff = todoVO.getEnd_date().getTime() - todoVO.getStart_date().getTime();
 		todoVO.setDays((int)diff/(1000*60*60*24)+1);
@@ -402,5 +442,34 @@ public class HomeController {
 	public String todoDeleteOkPost(@RequestParam(name = "todo_id") int todo_id) {
 		todoService.delete(todo_id);
 		return "redirect:/todo";
+	}
+	@GetMapping("/addTodoOk")
+	public String addTodoOkGet() {
+		return "redirect:/";
+	}
+	@PostMapping("/addTodoOk")
+	public String addTodoOkPost(HttpSession session,RedirectAttributes redirectAttributes,
+			@RequestParam(name = "plan_id") int plan_id,
+			@RequestParam(name = "detail_id") int detail_id,
+			@RequestParam(name = "todo_id") int todo_id,
+			@RequestParam(name = "whatday") int whatday) {
+		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+		}
+		TodoListVO todoListVO = new TodoListVO();
+		DetailVO detailVO = detailService.selectByDetailId(detail_id);
+		todoListVO.setTodo_id(todo_id);
+		todoListVO.setAddress(detailVO.getAddress());
+		todoListVO.setInfo(detailVO.getInfo());
+		todoListVO.setLatitude(detailVO.getLatitude());
+		todoListVO.setLongitude(detailVO.getLongitude());
+		todoListVO.setSpot(detailVO.getSpot());
+		todoListVO.setTime_info(detailVO.getTime_info());
+		todoListVO.setWhatday(whatday);
+		todoListService.insert(todoListVO);
+		log.info("TODO추가 성공 : "+todoListVO);
+		return "redirect:/planview?plan_id="+ plan_id;
 	}
 }

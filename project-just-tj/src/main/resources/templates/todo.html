@@ -43,7 +43,7 @@
 			<table class="listTable">
 				<th:block th:each="list : ${tlist}">
 					<tr>
-						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]]</td>
+						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]] ([[${#dates.format(list.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(list.end_date,'YY/MM/dd')}]])</td>
 						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
 						<td>
 							<form th:action="@{/todoDeleteOk}" method="post" class="deleteForm">
@@ -58,7 +58,7 @@
 				</th:block>
 			</table>
 			<div class="add">
-				<button type="button" class="btn btn-info btn-sm" style="font-weight: bold; font-size: 14pt;" onclick="location.href='/todoForm'">TODO 일정추가</button>
+				<button type="button" class="btn btn-primary btn-sm" style="font-weight: bold; font-size: 14pt;" onclick="location.href='/todoForm'">TODO 일정추가</button>
 			</div>
 		</div>
 	</section>

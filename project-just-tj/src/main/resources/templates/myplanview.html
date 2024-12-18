@@ -14,13 +14,13 @@
 <link rel="stylesheet" type="text/css" href="css/font.css">
 <script type="text/javascript">	
 	$(function(){
-		$(".plusBox").click(function(){
+		$("#plusBtn").click(function(){
 			$(".detailBox").show();
-			$(".plusBox").hide();
+			$("#plusBtn").hide();
 		})
-		$(".back").click(function(){
+		$("#back").click(function(){
 			$(".detailBox").hide();
-			$(".plusBox").show();
+			$("#plusBtn").show();
 		})
 		$(".deleteForm").submit(function(){
 			if(!confirm('정말 삭제하시겠습니까?')){
@@ -243,7 +243,7 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]</div>
+				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]] <span style="font-size: 13pt;">([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
 				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<table class="listTable">
@@ -302,7 +302,7 @@
 				</th:block>
 			</table>
 			<div class="plusBox">
-				<button class="btn btn-primary btn-sm" style="margin-right: 20px; font-weight: bold;">+</button>
+				<button class="btn btn-primary btn-sm" id="plusBtn" style="margin-right: 20px; font-weight: bold;">+</button>
 			</div>
 			<div class="detailBox">
 				<form th:action="@{/detailAdd}" method="post" id="addForm" enctype="multipart/form-data">
@@ -333,7 +333,7 @@
 					</div>
 					<div style="text-align: right;">
 						<input type="submit" class="btn btn-success btn-sm" value="저장"/>
-						<input type="button" class="btn btn-secondary btn-sm" value="취소"/>
+						<input type="button" id="back" class="btn btn-secondary btn-sm" value="취소"/>
 					</div>
 				</form>
 			</div>
