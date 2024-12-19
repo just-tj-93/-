@@ -9,8 +9,8 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/my.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/myplan.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){
 		$(".deleteForm").submit(function(){
@@ -27,19 +27,20 @@
 	</header>
 	<nav>
 		<div class="menu_bar">
-			<div class="main" onclick="location.href='/'">
+			<div class="main" onclick="location.href='/'" style="color: grey;">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'" style="background: #ebebeb; border-radius: 10px;">
 				일정공유
 			</div>
-			<div onclick="location.href='/todo'">
+			<div onclick="location.href='/todo'" style="color: grey;">
 				나의일정
 			</div>
 		</div>
 	</nav>
 	<section class="bg">
 		<div class="listBox">
+			<div class="listName">내가 공유한 일정</div>
 			<table class="listTable">
 				<th:block th:each="list : ${plist}">
 					<tr>
@@ -48,7 +49,7 @@
 						<td>
 							<form th:action="@{/deleteOk}" method="post" class="deleteForm">
 								<input type="hidden" name="plan_id" th:value="${list.plan_id}"/>
-								<input type="submit" value="삭제" class="btn btn-dark btn-sm"/>
+								<input type="submit" value="X" class="btn btn-secondary-outline btn-sm"/>
 							</form>
 						</td>
 					</tr>
@@ -58,7 +59,7 @@
 				</th:block>
 			</table>
 			<div class="add">
-				<button type="button" class="btn btn-primary btn-sm" style="font-weight: bold;" onclick="location.href='/form'">추가</button>
+				<button type="button" class="btn btn-primary btn-sm" style="font-weight: bold;" onclick="location.href='/planform'">추가</button>
 			</div>
 		</div>
 	</section>

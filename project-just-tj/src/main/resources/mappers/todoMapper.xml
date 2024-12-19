@@ -55,7 +55,7 @@
 		]]>
 	</select>
 	<select id="selectTodoByUserId" parameterType="int" resultType="TodoVO">
-		select * from todo where user_id=#{user_id} order by todo_id desc
+		select * from todo where user_id=#{user_id} order by start_date asc
 	</select>
 	<select id="selectTodoByTodoId" parameterType="int" resultType="TodoVO">
 		select * from todo where todo_id=#{todo_id}

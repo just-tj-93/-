@@ -1,164 +1,34 @@
-header {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 50px;
-	line-height: 50px;
-	color: black;
-	background-color: white;
-	text-align: center;
-	font-size: 24px;
-	font-weight: bold;
-	z-index: 10;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.menu_bar {
-	position: fixed;
-	display: flex;
-	justify-content: space-around;
-	border: 0px solid black;
-	border-right: 1px solid #ebebeb;
-	top: 50px;
-	width: 100%;
-	height: 50px;
-	text-align: center;
-	background-color: white;
-	z-index: 10;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.menu_bar div {
-	width: 100px;
-	height: 50px;
-	line-height: 50px;
-	margin-bottom: 50px;
-	font-weight: bold;
-	font-size: 1.3rem;
-}
-
-.menu_bar div:hover {
-	background-color: #ebebeb;
-	border-radius: 10px;
-	cursor: pointer;
-}
-
-.bg {
-	background-color: white;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	overflow: scroll;
-}
 
 .listBox {
 	position: relative;
 	margin: 160px auto;
-	width: 920px;
+	width: 900px;
+	height: 300px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
-
-.titleBox {
-	display: flex;
-	justify-content: space-between;
-	margin: 10px auto;
-	text-indent: 10px;
-	width: 850px;
-	border-radius: 10px;
-	background: rgba(215, 215, 255, 0.5);
-}
-
-.listTable {
-	width: 850px;
-	margin: 20px auto;
-}
-.container {
-	width: 480px;
-	display: flex;
-}
-.pic {
-	width: 350px;
-	height: 250px;
-}
-img {
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
-
-.title {
-	font-size: 15pt;
+.listName {
+	text-align: center;
 	font-weight: bold;
-	text-indent: 20px;
+	font-size: 16pt;
+	padding: 10px;
+	border-bottom: 1px solid #ebebeb;
 }
-
+.listTable {
+	width: 800px;
+	margin:20px auto;
+}
+.title {
+	font-size: 14pt;
+	font-weight: bold;
+}
 .title:hover {
 	cursor: pointer;
 }
-
-.subtitle {
-	text-indent: 200px;
-}
-
-.like {
-	background: rgb(133, 228, 252, 0.4);
-	width: 50px;
-	font-weight: bold;
-	border-radius: 5px;
-}
-
-.plusBox {
-	margin-bottom: 10px;
-	text-align: right;
-}
-
-.detailBox {
+.add {
 	position: relative;
-	width:600px;
-	display: none;
-	margin: 20px auto;
+	width: 70px;
+	margin: 0px auto;
 }
-.location {
-	width: 360px;
-	height: 250px;
-	margin-top: 5px;
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
-#previewBox img {
-	width: 120px;
-	height: 110px;
-	border: 1px solid #ffffff;
-}
-
-#prev {
-	display: none;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:link {
-	color: black;
-}
-
-a:visited {
-	color: black;
-}
-
-#map {
-	height: 280px;
-	width: 600px;
-	margin-bottom: 10px;
-}
-
-#search-container {
-	margin: 10px auto;
-}
-

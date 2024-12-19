@@ -10,7 +10,7 @@
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
 <link rel="stylesheet" type="text/css" href="css/todo.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){
 		$(".deleteForm").submit(function(){
@@ -19,6 +19,25 @@
 			}
 		})
 	})
+		$(document).ready(function() {
+			const today = new Date();
+            today.setHours(0, 0, 0, 0); // 시간 값을 0으로 설정하여 날짜 비교가 정확하도록 함
+            
+            $(".todoRow").each(function() {
+            	const dueDateStr = $(this).data("due-date");
+                const dueDate = new Date(dueDateStr);
+                dueDate.setHours(0, 0, 0, 0); // 시간 값을 0으로 설정
+                
+                const timeDiff = dueDate - today;
+                const daysDiff = Math.ceil(timeDiff/(1000*60*60*24));
+        
+                if (daysDiff < 0) {
+                    $(this).hide(); // D-day가 지난 항목 숨기기
+                } else {
+               	 	$(this).find(".dDay").text('D-'+daysDiff);
+                }
+            });
+        });
 </script>
 </head>
 <body>
@@ -27,28 +46,32 @@
 	</header>
 	<nav>
 		<div class="menu_bar">
-			<div class="main" onclick="location.href='/'">
+			<div class="main" onclick="location.href='/'" style="color: grey;">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'" style="color: grey;">
 				일정공유
 			</div>
-			<div onclick="location.href='/todo'">
+			<div onclick="location.href='/todo'" style="background: #ebebeb; border-radius: 10px;">
 				나의일정
 			</div>
 		</div>
 	</nav>
 	<section class="bg">
 		<div class="listBox">
+			<div class="listName">내 TODO 일정</div>
 			<table class="listTable">
 				<th:block th:each="list : ${tlist}">
-					<tr>
-						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]] ([[${#dates.format(list.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(list.end_date,'YY/MM/dd')}]])</td>
+					<tr class="todoRow" th:data-due-date="${#dates.format(list.start_date,'yyyy-MM-dd')}">
+						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]]
+						 <span style="font-size: 12pt; font-weight: normal;">([[${#dates.format(list.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(list.end_date,'YY/MM/dd')}]])</span>
+						<span class="dDay" style="color: blue; font-size: 14pt;"></span>
+						 </td>
 						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
 						<td>
 							<form th:action="@{/todoDeleteOk}" method="post" class="deleteForm">
 								<input type="hidden" name="todo_id" th:value="${list.todo_id}"/>
-								<input type="submit" value="삭제" class="btn btn-dark btn-sm"/>
+								<input type="submit" value="X" class="btn btn-secondary-outline btn-sm"/>
 							</form>
 						</td>
 					</tr>
@@ -58,7 +81,7 @@
 				</th:block>
 			</table>
 			<div class="add">
-				<button type="button" class="btn btn-primary btn-sm" style="font-weight: bold; font-size: 14pt;" onclick="location.href='/todoForm'">TODO 일정추가</button>
+				<button type="button" class="btn btn-primary btn-sm" style="font-weight: bold; font-size: 13pt;" onclick="location.href='/todoForm'">TODO 일정추가</button>
 			</div>
 		</div>
 	</section>

@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -156,9 +157,11 @@ public class HomeController {
 		List<DetailVO> list = detailService.selectByPlanId(plan_id);
 		PlanVO planVO = planService.selectPlanByPlanId(plan_id);
 		boolean isLogin = isUserLoggedin();
+		if (user_id != null) {
+			List<TodoVO> tlist = todoService.selectTodoByUserId(user_id);
+			model.addAttribute("tlist", tlist);
+		}
 		UserVO userVO = getUserInfo();
-		List<TodoVO> tlist = todoService.selectTodoByUserId(user_id);
-		model.addAttribute("tlist", tlist);
 		model.addAttribute("dv", dv);
 		model.addAttribute("list", list);
 		model.addAttribute("isLogin", isLogin);
@@ -175,6 +178,11 @@ public class HomeController {
     public int fetchRelatedData(@RequestParam("todo_id") int todo_id) {
 		TodoVO todoVO = todoService.selectTodoByTodoId(todo_id);
         return todoVO.getDays();
+    }
+	@GetMapping("/check-session")
+    public ResponseEntity<Boolean> checkSession(HttpSession session) {
+		Boolean isLoggedIn = session.getAttribute("user_id") != null;
+        return ResponseEntity.ok(isLoggedIn);
     }
 	
 	@GetMapping("/myplanview")
@@ -236,7 +244,7 @@ public class HomeController {
 	
 	@GetMapping("/detailAdd")
 	public String detailAddGet() {
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	@PostMapping("/detailAdd")
 	public String detailAddPost(@RequestParam(name = "plan_id") int plan_id,
@@ -308,7 +316,7 @@ public class HomeController {
 	
 	@GetMapping("/deleteDetail")
 	public String detailDeleteGet() {
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	@PostMapping("/deleteDetail")
 	public String detailDeletePost(@RequestParam(name = "detail_id") int detail_id,
@@ -343,7 +351,7 @@ public class HomeController {
 		return "redirect:/myplanview?plan_id=" + plan_id;
 	}
 	
-	@GetMapping("/my")
+	@GetMapping("/myplan")
 	public String my(HttpSession session,RedirectAttributes redirectAttributes,
 			Model model) {
 		// 사용자 로그인 여부 확인
@@ -354,9 +362,9 @@ public class HomeController {
 			}
 		List<PlanVO> plist = planService.selectPlanByUserId(user_id);
 		model.addAttribute("plist", plist);
-		return "my";
+		return "myplan";
 	}
-	@GetMapping("/form")
+	@GetMapping("/planform")
 	public String form(HttpSession session,RedirectAttributes redirectAttributes,
 			Model model, @ModelAttribute UserVO userVO) {
 		Integer user_id = (Integer) session.getAttribute("user_id");
@@ -365,31 +373,35 @@ public class HomeController {
 			return "redirect:/login"; // 로그인 페이지로 리다이렉트
 		}
 		model.addAttribute("user_id",userVO.getUser_id());
-		return "form";
+		return "planform";
 	}
 	
 	@GetMapping("/formOk")
 	public String formOkGet() {
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	@PostMapping("/formOk")
 	public String formOkPost(HttpSession session,RedirectAttributes redirectAttributes,
 			@ModelAttribute PlanVO planVO) {
 		Integer user_id = (Integer) session.getAttribute("user_id");
+		if (user_id == null) {
+			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
+			return "redirect:/login"; 
+		}
 		planVO.setUser_id(user_id);
 		long diff = planVO.getEnd_date().getTime() - planVO.getStart_date().getTime();
 		planVO.setDays((int)diff/(1000*60*60*24)+1);
 		planService.insert(planVO);
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	@GetMapping("/deleteOk")
 	public String deleteOkGet() {
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	@PostMapping("/deleteOk")
 	public String deleteOkPost(@RequestParam(name = "plan_id") int plan_id) {
 		planService.delete(plan_id);
-		return "redirect:/my";
+		return "redirect:/myplan";
 	}
 	
 	@GetMapping("/todo")
@@ -398,7 +410,7 @@ public class HomeController {
 		Integer user_id = (Integer) session.getAttribute("user_id");
 		if (user_id == null) {
 			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
-			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+			return "redirect:/login"; 
 		}
 		List<TodoVO> tlist = todoService.selectTodoByUserId(user_id);
 		model.addAttribute("tlist", tlist);
@@ -410,7 +422,7 @@ public class HomeController {
 		Integer user_id = (Integer) session.getAttribute("user_id");
 		if (user_id == null) {
 			redirectAttributes.addFlashAttribute("message", "로그인 후 이용 할 수 있습니다");
-			return "redirect:/login"; // 로그인 페이지로 리다이렉트
+			return "redirect:/login";
 		}
 		model.addAttribute("user_id",userVO.getUser_id());
 		return "todoForm";

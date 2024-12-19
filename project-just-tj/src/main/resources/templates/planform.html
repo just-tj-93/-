@@ -9,8 +9,8 @@
 <script src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/form.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/todoform.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){
 		
@@ -68,27 +68,28 @@
 	</header>
 	<nav>
 		<div class="menu_bar">
-			<div class="main" onclick="location.href='/'">
+			<div class="main" onclick="location.href='/'" style="color: grey;">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'" style="background: #ebebeb; border-radius: 10px;">
 				일정공유
 			</div>
-			<div onclick="location.href='/todo'">
+			<div onclick="location.href='/todo'" style="color: grey;">
 				나의일정
 			</div>
 		</div>
 	</nav>
 	<section class="bg">
 		<div class="listBox">
+		<div style="text-align: center; font-weight: bold; font-size: 16pt; margin-top: 10px;">공유 일정 추가</div>
 			<div class="formBox">
 				<form th:action="@{/formOk}" method="post" class="form">		
-					<input type="text" placeholder="일정 제목" name="title" size="92" style="margin-bottom: 10px; height: 40px;"/>
+					<input type="text" placeholder="일정 제목" name="title" size="60" style="margin-bottom: 10px; height: 40px;"/>
 					<div style="margin-bottom: 10px;">
 						<label for="start_date">출발일</label>
-						<input type="datetime-local" name="start_date" style="width: 200px;"/>
+						<input type="datetime-local" name="start_date" style="width: 250px;"/>
 						<label for="end_date">도착일</label>
-						<input type="datetime-local" name="end_date" style="width: 200px;"/>
+						<input type="datetime-local" name="end_date" style="width: 250px;"/>
 					</div>
 					<div style="margin-bottom: 10px;">
 						<select name="country" id="country" onchange="change()" required="required">
@@ -102,10 +103,11 @@
 						<input type="hidden" name="city" id="city" value="" />
 						
 					</div>
-					<textarea name="subtitle" id="subtitle" cols="93" rows="4" placeholder="일정소개" style="margin-bottom: 10px;"></textarea>
+					<textarea name="subtitle" id="subtitle" cols="60" rows="4" placeholder="일정소개" style="margin-bottom: 10px;"></textarea>
 					<div style="text-align: right;">
-						<input type="submit" value="저장"/>
-						<input type="reset" value="초기화" class="reset"/>
+						<input type="submit" class="btn btn-success btn-sm" value="저장"/>
+						<input type="reset" value="초기화" class="btn btn-dark btn-sm"/>
+						<input type="button" class="btn btn-light btn-sm" value="뒤로" onclick="location.href='/myplan'"/>
 					</div>
 				</form>
 			</div>

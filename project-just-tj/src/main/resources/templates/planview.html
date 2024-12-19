@@ -11,7 +11,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
 <link rel="stylesheet" type="text/css" href="css/planview.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){ 
 		// 사진 슬라이드
@@ -68,24 +68,26 @@
                     $('select[name="whatday"]').empty().append('<option value="">일차 선택</option>');
                 }
             });
-            $(".detailAdd").val("내 일정 추가");
+            
             $(".detailAdd").click(function() {
+            	// 세션 확인 요청
+                $.get('/check-session', function(isLoggedIn) {
+                    if (isLoggedIn) {
+                        // 세션이 있을 때 레이어 팝업 호출
+                        $(".popUpBg").show();
+                        $(".popUp").fadeIn(200);
+                    } else {
+                        alert('로그인이 필요합니다.');
+                    }
+                });
+            	
             	var detailId = $(this).data("detailId");
                 $('input[name="detail_id"]').val(detailId); 
             });
         });
-            
-		$(".detailAdd").click(function(){
-			$(".popUpBg").show();
-			$(".stockPopup").fadeIn(200);
-		  })
-		  $("#stockClose").click(function(){
+		  $("#close").click(function(){
 			  $(".popUpBg").hide();
-			  $(".stockPopup").fadeOut(200);
-		  })
-		  $("#categorySet").click(function(){
-			$(".popUpBg").show();
-			$(".catePopup").fadeIn(200);
+			  $(".popUp").fadeOut(200);
 		  })
 	});
 	function initMap() {
@@ -120,7 +122,7 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'">
 				일정공유
 			</div>
 			<div onclick="location.href='/todo'">
@@ -131,13 +133,15 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]</div>
+				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]<span style="font-size: 13pt;"> ([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
 				<div style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share-fill" style="margin-right: 10px;"></i></div>
 			</div>
+			<div th:each="item : ${#numbers.sequence(1, planVO.days)}">
+			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>
 			<table class="listTable">
-				<th:block th:each="dvo : ${list}">
+				<th:block th:each="dvo : ${list}" th:if="${dvo.whatday}== ${item}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
+						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
 						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd hh:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
@@ -176,7 +180,7 @@
 					</tr>
 					<tr>
 						<td colspan="3" style="text-align: right;">
-							<button type="button" class="detailAdd" th:data-detail-id="${dvo.detail_id}">내 일정 추가</button>
+							<button type="button" class="detailAdd" th:data-detail-id="${dvo.detail_id}">내 일정에 추가</button>
 						</td>
 					</tr>
 					<tr style="border-bottom: 1px solid lightgrey;">
@@ -187,19 +191,20 @@
 					</tr>
 				</th:block>
 			</table>
+			</div>
 		</div>
 	</section>
 		<!-- 일정추가 팝업 -->
 		<div class="popUpBg"></div>
-			<div class="stockPopup">
+			<div class="popUp">
 				<div class="inBox">
 					<div style="display: flex; justify-content: space-between;">
 						<div style="font-weight: bold; font-size: 14pt;">내 일정에 추가</div>
-						<input type="button" class="btn btn-light btn-sm" id="stockClose" value="X"/>
+						<input type="button" class="btn btn-light btn-sm" id="close" value="X"/>
 					</div>
 				</div>
 				<div class="formBox">
-					<form th:action="@{/addTodoOk}" method="post" class="stockForm">
+					<form th:action="@{/addTodoOk}" method="post" class="todoForm">
 						<input type="hidden" name="detail_id" value=""/>
 						<input type="hidden" name="plan_id" th:value="${planVO.plan_id}"/>
 						<select name="todo_id" required="required">
@@ -209,7 +214,7 @@
 						<select name="whatday" required="required">
 							<option value="">일차선택</option>				
 						</select>
-						<input type="submit" class="btn btn-info btn-sm" value="추가"/>
+						<input type="submit" class="btn btn-info btn-sm" style="margin-left: 40px; font-weight: bold;" value="추가"/>
 					</form>
 				</div>
 			</div>	

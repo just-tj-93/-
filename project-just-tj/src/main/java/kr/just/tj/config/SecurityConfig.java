@@ -31,10 +31,10 @@ public class SecurityConfig{
 		http.authorizeHttpRequests((authorize)->{
 			authorize
 			.requestMatchers("/","/*","/join","/login").permitAll()
-			//.requestMatchers("/auth/send-verification-code", "/auth/verify-code").permitAll()
+			.requestMatchers("/auth/send-verification-code", "/auth/verify-code").permitAll()
             .requestMatchers("/css/**").permitAll()
             //.requestMatchers("/error/**").permitAll()
-            .requestMatchers("/my","/form","/todo").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/myplan","/myplanview","/mytodoview","/form","/todo","/todoForm").hasAnyRole("USER", "ADMIN")
 			.anyRequest().authenticated();  // 그 외 모든 요청은 인증 필요
 		});
 		// 사용자가 만든 로그인 폼을 사용하겠다.

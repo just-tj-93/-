@@ -11,7 +11,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
 <link rel="stylesheet" type="text/css" href="css/mytodo.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){
 		$("#addBtn").click(function(){
@@ -139,8 +139,21 @@
                 }
             });
         });
+     // D-day 로직
+        const $titleBox = $('.titleBox');
+        const startDate = new Date($titleBox.data('start-date'));
+        startDate.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        // 시간 계산 (밀리초 단위)
+        const timeDiff = startDate - today;
+        const daysDiff = Math.ceil(timeDiff/(1000*60*60*24));
         
+        if (daysDiff > 0) {
+        	$('#d-day').text('D-'+ daysDiff);
+        }
     });
+
 	function initMap() {
         /* 데이터가 있는 HTML 요소들로부터 지도 초기화 정보 불러오기 */
         var locations = document.querySelectorAll('.location');
@@ -173,7 +186,7 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'">
 				일정공유
 			</div>
 			<div onclick="location.href='/todo'">
@@ -183,8 +196,11 @@
 	</nav>
 	<section class="bg">
 		<div class="listBox">
-			<div class="titleBox">
-				<div style="font-size: 20pt; font-weight: bold;">[[${todoVO.todo_title}]] <span style="font-size: 13pt;">([[${#dates.format(todoVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(todoVO.end_date,'YY/MM/dd')}]])</span> </div>
+			<div class="titleBox" th:data-start-date="${#dates.format(todoVO.start_date,'yyyy-MM-dd')}">
+				<div style="font-size: 20pt; font-weight: bold;">[[${todoVO.todo_title}]] 
+				<span style="font-size: 13pt;">([[${#dates.format(todoVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(todoVO.end_date,'YY/MM/dd')}]])</span>
+				 <span id="d-day" style="color: blue; font-size: 14pt;"></span>
+				 </div>
 				<div style="line-height: 35px;">[[${#dates.format(todoVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<div th:each="item : ${#numbers.sequence(1, todoVO.days)}">
@@ -241,11 +257,11 @@
 						<option th:each="i : ${#numbers.sequence(1, todoVO.days)}" th:value="${i}" th:text="${i}"></option>
 					</select>
 					<span>일차</span>
-					<div>
+					<div style="margin-top: 5px;">
 						<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
 					</div>
 					<div id="search-container">
-				        <input type="text" id="search-input" name="spot" size="50" placeholder="장소를 검색하세요">
+				        <input type="text" id="search-input" name="spot" size="40" placeholder="장소를 검색하세요">
 				        <button id="search-button" class="btn btn-info btn-sm">검색</button>
 				    </div>
 				    <div id="map"></div>
@@ -253,7 +269,7 @@
 		            <input type="hidden" id="longitude" name="longitude">
 		            <input type="hidden" id="address" name="address">
 					<div style="margin: 5px auto;">
-						<textarea name="info" id="info" cols="82" rows="3" placeholder="설명"></textarea>
+						<textarea name="info" id="info" cols="52" rows="3" placeholder="설명"></textarea>
 					</div>
 					<div style="text-align: right;">
 						<input type="submit" class="btn btn-success btn-sm" value="저장"/>

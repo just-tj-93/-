@@ -10,8 +10,8 @@
 <script src="/webjars/axios/1.4.0/dist/axios.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiEABF4e5f5R2jqmzbzg7CHX7MwM1Pkiw&libraries=places"></script>
 <title>여행일정공유 서비스 여정</title>
-<link rel="stylesheet" type="text/css" href="css/myplan.css">
-<link rel="stylesheet" type="text/css" href="css/font.css">
+<link rel="stylesheet" type="text/css" href="css/myplanview.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
 <script type="text/javascript">	
 	$(function(){
 		$("#plusBtn").click(function(){
@@ -232,7 +232,7 @@
 			<div class="main" onclick="location.href='/'">
 				MAIN
 			</div>
-			<div class="country" onclick="location.href='/my'">
+			<div class="country" onclick="location.href='/myplan'">
 				일정공유
 			</div>
 			<div onclick="location.href='/todo'">
@@ -246,10 +246,12 @@
 				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]] <span style="font-size: 13pt;">([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
 				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
+			<div th:each="item : ${#numbers.sequence(1, planVO.days)}">
+			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>
 			<table class="listTable">
-				<th:block th:each="dvo, stat : ${list}">
+				<th:block th:each="dvo, stat : ${list}" th:if="${dvo.whatday}== ${item}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.whatday}]]일차 [[${dvo.spot}]]</td>
+						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
 						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</td>
 						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
 					</tr>
@@ -301,6 +303,7 @@
 					</tr>
 				</th:block>
 			</table>
+			</div>
 			<div class="plusBox">
 				<button class="btn btn-primary btn-sm" id="plusBtn" style="margin-right: 20px; font-weight: bold;">+</button>
 			</div>
@@ -311,10 +314,12 @@
 						<option th:each="i : ${#numbers.sequence(1, planVO.days)}" th:value="${i}" th:text="${i}"></option>
 					</select>
 					<span>일차</span>
-					<input type="datetime-local" name="visit_date" id="visit_date" placeholder="방문시간" th:value="${localtime}" style="width: 200px;"/>
-					<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
+					<input type="datetime-local" name="visit_date" id="visit_date" placeholder="방문시간" th:value="${localtime}" style="width: 250px;"/>
+					<div style="margin-top: 5px;">
+						<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
+					</div>
 					<div id="search-container">
-				        <input type="text" id="search-input" name="spot" size="50" placeholder="장소를 검색하세요">
+				        <input type="text" id="search-input" name="spot" size="40" placeholder="장소를 검색하세요">
 				        <button id="search-button" class="btn btn-info btn-sm">검색</button>
 				    </div>
 				    <div id="map"></div>
@@ -329,7 +334,7 @@
 						<div class="form-group" id="previewBox" style="display: flex;"></div>
 					</div>
 					<div style="margin: 5px auto;">
-						<textarea name="info" id="info" cols="82" rows="3" placeholder="설명"></textarea>
+						<textarea name="info" id="info" cols="52" rows="3" placeholder="설명"></textarea>
 					</div>
 					<div style="text-align: right;">
 						<input type="submit" class="btn btn-success btn-sm" value="저장"/>
