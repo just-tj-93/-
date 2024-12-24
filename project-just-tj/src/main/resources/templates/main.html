@@ -43,15 +43,19 @@
 					<option value="country">나라</option>
 					<option value="city">도시</option>
 				</select>
-				<input type="text" name="search" id="search" size="30"/>
+				<input type="text" name="search" id="search" size="18"/>
 				<input type="submit" id="submit" value="검색"/>
 			</form>
 		</div>
 			<table class="listTable">
+			<colgroup>
+                  <col width="82%" />
+                  <col width="18%" />
+                </colgroup>
 				<th:block th:each="pv : ${pv.list}">
 					<tr th:onclick="location.href='/planview?plan_id=[[${pv.plan_id}]]'">
 						<td class="title">[[${pv.title}]]&nbsp;<span class="subtitle">- [[${pv.subtitle}]]</span></td>
-						<td><span style="color:grey; font-size: 12pt;">by [[${pv.user_name}]]&nbsp;</span> [[${#dates.format(pv.reg_date,'yy/MM/dd')}]]</td>
+						<td class="userName"><span class="">by [[${pv.user_name}]]&nbsp;</span> [[${#dates.format(pv.reg_date,'yy/MM/dd')}]]</td>
 					</tr>
 					<tr>
 						<!--  
@@ -59,7 +63,7 @@
 						-->
 					</tr>
 					<tr style="border-bottom: 1px solid lightgrey;">
-						<td>&nbsp;</td>
+						
 					</tr>
 				</th:block>
 			</table>

@@ -84,10 +84,11 @@
 		<div style="text-align: center; font-weight: bold; font-size: 16pt; margin-top: 10px;">TODO 일정 추가</div>
 			<div class="formBox">
 				<form th:action="@{/todoFormOk}" method="post" class="form">		
-					<input type="text" placeholder="일정 제목" name="todo_title" size="60" style="margin-bottom: 10px; height: 40px;"/>
+					<input type="text" placeholder="일정 제목" name="todo_title" size="33" style="margin-bottom: 10px; height: 40px;"/>
 					<div style="margin-bottom: 10px;">
 						<label for="start_date">출발일</label>
 						<input type="datetime-local" name="start_date" style="width: 200px;"/>
+						<br />
 						<label for="end_date">도착일</label>
 						<input type="datetime-local" name="end_date" style="width: 200px;"/>
 					</div>

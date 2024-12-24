@@ -1,8 +1,8 @@
 
 .listBox {
 	position: relative;
-	margin: 160px auto;
-	width: 920px;
+	margin: 90px auto;
+	width: 100%;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -14,23 +14,24 @@
 	justify-content: space-between;
 	margin: 10px auto;
 	text-indent: 10px;
-	width: 850px;
+	width: 100%;
 	border-radius: 10px;
 	background: rgba(215, 215, 255, 0.5);
 }
 
 .listTable {
-	width: 850px;
+	width: 100%;
 	margin: 20px auto;
 }
 .container {
-	width: 480px;
-	display: flex;
+	width: 100%;
+	
 }
 .pic {
 	width: 350px;
 	height: 250px;
 }
+
 img {
 	border-radius: 10px;
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
@@ -45,6 +46,63 @@ img {
 .title:hover {
 	cursor: pointer;
 }
+@media (max-width: 400px) { 
+	.title {
+	font-size: 14pt;
+	font-weight: bold;
+	text-indent: 10px;
+}
+	.pic {
+	width: 150px;
+	height: 150px;
+}
+	.titleBox {
+	font-size: 10pt;
+}
+	.date {
+	font-size: 8pt;
+}
+	.reg {
+	display: none;
+	}
+	
+	#map {
+		width: 150px;
+		height: 150px;
+		margin-bottom: 10px;
+	}
+	img {
+	width: 150px;
+	height: 150px;
+	}
+	.detailBox {
+	position: relative;
+	width:100%;
+	display: none;
+	margin: 20px auto;
+	border-top: 1px solid grey;
+	padding: 10px;
+}
+table span {
+	font-size: 8pt;
+}
+
+}
+.container {
+	display: flex;
+}
+.caret {
+	position: relative; 
+	top: 100px;
+	width: 40px;
+}
+@media (max-width: 400px) { 
+.caret {
+	position: relative; 
+	top: 50px;
+	width: 25px;
+}
+	}
 
 .subtitle {
 	text-indent: 200px;
@@ -64,9 +122,9 @@ img {
 
 .detailBox {
 	position: relative;
-	width:600px;
+	width:50%;
 	display: none;
-	margin: 20px auto;
+	margin: 0px auto;
 	border-top: 1px solid grey;
 	padding: 10px;
 }
@@ -76,6 +134,22 @@ img {
 	margin-top: 5px;
 	border-radius: 10px;
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 400px) { 
+	.location {
+	width: 150px;
+	height: 150px;
+	border-radius: 10px;
+	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+.detailBox {
+	position: relative;
+	width:100%;
+	display: none;
+	margin: 0px auto;
+	border-top: 1px solid grey;
+	padding: 10px;
+}
 }
 #previewBox img {
 	width: 120px;
@@ -89,7 +163,7 @@ img {
 
 #map {
 	height: 280px;
-	width: 600px;
+	width: 320px;
 	margin-bottom: 10px;
 }
 

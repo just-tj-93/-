@@ -243,25 +243,20 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]] <span style="font-size: 13pt;">([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
-				<div style="line-height: 35px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
+				<div class="title">[[${planVO.title}]] <span class="date">([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
+				<div class="reg">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<div th:each="item : ${#numbers.sequence(1, planVO.days)}">
 			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>
 			<table class="listTable">
 				<th:block th:each="dvo, stat : ${list}" th:if="${dvo.whatday}== ${item}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
-						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</td>
-						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
-					</tr>
-					<tr style="height: 10px;">
-						<td></td>
+						<td colspan="3" class="spot" style="text-indent: 20px;">[[${dvo.spot}]] <span th:if="${dvo.visit_date} != null"> (방문 : [[${#dates.format(dvo.visit_date,'MM/dd HH:mm')}]])</span><span th:if="${dvo.time_info} != null"> ([[${dvo.time_info}]])</span></td>
 					</tr>
 					<tr>
 						<td>
 							<div class="container">
-								<div style="position: relative; top: 110px; width: 35px;">
+								<div class="caret">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-caret-left-fill"></i></button>
 								</div>
 								<div class="pic" style="overflow: hidden;">
@@ -269,12 +264,12 @@
 										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="250"/>
 									</th:block>
 								</div>
-								<div style="position: relative; top: 110px; width: 35px;">
+								<div class="caret">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-caret-right-fill"></i></button>
 								</div>
 							</div>
 						</td>
-						<td colspan="2">
+						<td>
 							<div class="location"
 					             th:data-latitude="${dvo.latitude}" 
 					             th:data-longitude="${dvo.longitude}">
@@ -285,13 +280,12 @@
 						<td></td>
 					</tr>
 					<tr>
-						<td>[[${dvo.info}]]</td>
-						<td>&nbsp;</td>
+						<td class="info" style="text-indent: 20px;">[[${dvo.info}]]</td>
 						<td style="text-align: right;">
 							<form th:action="@{/deleteDetail}" method="post" class="deleteForm">
 								<input type="hidden" name="plan_id" th:value="${dvo.plan_id}"/>
 								<input type="hidden" name="detail_id" th:value="${dvo.detail_id}"/>
-								<input type="submit" class="btn btn-secondary btn-sm" value="삭제"/>
+								<input type="submit" class="btn btn-secondary-outline btn-sm" value="X"/>
 							</form>
 						</td>
 					</tr>
@@ -319,7 +313,7 @@
 						<input type="text" name="time_info" size="40" placeholder="웨이팅 등 시간정보"/>
 					</div>
 					<div id="search-container">
-				        <input type="text" id="search-input" name="spot" size="40" placeholder="장소를 검색하세요">
+				        <input type="text" id="search-input" name="spot" size="35" placeholder="장소를 검색하세요">
 				        <button id="search-button" class="btn btn-info btn-sm">검색</button>
 				    </div>
 				    <div id="map"></div>
@@ -334,7 +328,7 @@
 						<div class="form-group" id="previewBox" style="display: flex;"></div>
 					</div>
 					<div style="margin: 5px auto;">
-						<textarea name="info" id="info" cols="52" rows="3" placeholder="설명"></textarea>
+						<textarea name="info" id="info" cols="45" rows="3" placeholder="설명"></textarea>
 					</div>
 					<div style="text-align: right;">
 						<input type="submit" class="btn btn-success btn-sm" value="저장"/>

@@ -1,13 +1,13 @@
 .listBox {
 	position: relative;
-	margin: 160px auto;
-	width: 900px;
-	height: 600px;
+	margin: 90px auto;
+	width: 80%;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
+
 .listName {
 	text-align: center;
 	font-weight: bold;
@@ -15,20 +15,59 @@
 	padding: 10px;
 	border-bottom: 1px solid #ebebeb;
 }
+
 .listTable {
-	width: 700px;
+	width: 100%;
 	margin: 20px auto;
+	text-indent: 10px;
 }
+
 .title {
 	font-size: 16pt;
 	font-weight: bold;
 }
+
 .title:hover {
 	cursor: pointer;
 }
+.dDay {
+		color: blue;
+		font-size: 14pt;
+	}
+@media ( max-width : 400px) {
+	.title {
+		font-size: 11pt;
+		font-weight: bold;
+	}
+	.reg {
+		font-size: 8pt;
+	}
+	.dDay {
+		color: blue;
+		font-size: 8pt;
+	}
+	.listBox {
+	width: 100%;
+}
+}
+
+.dates {
+	font-size: 12pt;
+	font-weight: normal;
+}
+
 .add {
 	position: relative;
 	width: 150px;
 	margin: 0px auto;
+	margin-bottom: 10px;
 }
 
+@media ( max-width : 400px) {
+	.add {
+		font-size: 10pt;
+	}
+	.dates {
+		font-size: 8pt;
+	}
+}

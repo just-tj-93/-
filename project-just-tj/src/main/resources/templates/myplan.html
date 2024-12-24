@@ -42,6 +42,11 @@
 		<div class="listBox">
 			<div class="listName">내가 공유한 일정</div>
 			<table class="listTable">
+			<colgroup>
+                  <col width="82%" />
+                  <col width="10%" />
+                  <col width="5%" />
+                </colgroup>
 				<th:block th:each="list : ${plist}">
 					<tr>
 						<td class="title" th:onclick="|location.href='@{/myplanview(plan_id=${list.plan_id})}'|">[[${list.title}]]</td>
@@ -54,7 +59,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>&nbsp;</td>
+						
 					</tr>
 				</th:block>
 			</table>

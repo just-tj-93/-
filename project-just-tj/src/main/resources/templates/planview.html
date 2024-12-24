@@ -133,17 +133,15 @@
 	<section class="bg">
 		<div class="listBox">
 			<div class="titleBox">
-				<div style="font-size: 18pt; font-weight: bold;">[[${planVO.title}]]<span style="font-size: 13pt;"> ([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
-				<div style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share-fill" style="margin-right: 10px;"></i></div>
+				<div class="title">[[${planVO.title}]] <span class="date"> ([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
+				<div class="reg" style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share-fill" style="margin-right: 10px;"></i></div>
 			</div>
 			<div th:each="item : ${#numbers.sequence(1, planVO.days)}">
 			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>
 			<table class="listTable">
 				<th:block th:each="dvo : ${list}" th:if="${dvo.whatday}== ${item}">
 					<tr>
-						<td style="font-weight: bold; font-size: 15pt;">[[${dvo.spot}]]</td>
-						<td th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd hh:mm')}]])</td>
-						<td th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</td>
+						<td colspan="3" class="spot" style="font-weight: bold; font-size: 15pt; text-indent: 10px;">[[${dvo.spot}]] <span th:if="${dvo.visit_date} != null">(방문시간 : [[${#dates.format(dvo.visit_date,'MM/dd hh:mm')}]])</span><span th:if="${dvo.time_info} != null">([[${dvo.time_info}]])</span></td>
 					</tr>
 					<tr style="height: 10px;">
 						<td></td>
@@ -151,7 +149,7 @@
 					<tr>
 						<td>
 							<div class="container">
-								<div style="position: relative; top: 110px; width: 35px;">
+								<div class="caret">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="prev"><i class="bi bi-caret-left-fill"></i></button>
 								</div>
 								<div class="pic" style="overflow: hidden;">
@@ -159,12 +157,12 @@
 										<img th:src="'https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/detail-'+ ${dvo.detail_id} +'-'+ ${item} + '.jpg'" alt="IMG" onerror="this.onerror=null; this.src='https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axkuc5y2jvfb/b/bucket-20241206-1343/o/noimg.jpg'" width="350" height="250"/>
 									</th:block>
 								</div>
-								<div style="position: relative; top: 110px; width: 35px;">
+								<div class="caret">
 									<button th:if="${dvo.img_count} > 1" class="btn btn-light btn-sm" id="next"><i class="bi bi-caret-right-fill"></i></button>
 								</div>
 							</div>
 						</td>
-						<td colspan="2">
+						<td>
 							<div class="location"
 					             th:data-latitude="${dvo.latitude}" 
 					             th:data-longitude="${dvo.longitude}">
@@ -175,7 +173,7 @@
 						<td></td>
 					</tr>
 					<tr>
-						<td>[[${dvo.info}]]</td>
+						<td class="info" style="text-indent: 10px;">[[${dvo.info}]]</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>

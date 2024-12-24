@@ -64,10 +64,10 @@
 				<th:block th:each="list : ${tlist}">
 					<tr class="todoRow" th:data-due-date="${#dates.format(list.start_date,'yyyy-MM-dd')}">
 						<td class="title" th:onclick="|location.href='@{/mytodoview(todo_id=${list.todo_id})}'|">[[${list.todo_title}]]
-						 <span style="font-size: 12pt; font-weight: normal;">([[${#dates.format(list.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(list.end_date,'YY/MM/dd')}]])</span>
-						<span class="dDay" style="color: blue; font-size: 14pt;"></span>
+						<span class="dates">([[${#dates.format(list.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(list.end_date,'YY/MM/dd')}]])</span>
+						<span class="dDay"></span>
 						 </td>
-						<td>[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
+						<td class="reg">[[${#dates.format(list.reg_date,'yy/MM/dd')}]]</td>
 						<td>
 							<form th:action="@{/todoDeleteOk}" method="post" class="deleteForm">
 								<input type="hidden" name="todo_id" th:value="${list.todo_id}"/>

@@ -1,8 +1,8 @@
 
 .listBox {
 	position: relative;
-	margin: 160px auto;
-	width: 900px;
+	margin: 90px auto;
+	width: 80%;
 	height: 700px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
@@ -12,13 +12,14 @@
 }
 .searchBox {
 	position: relative;
+	width: 100%;
 	margin: 10px auto;
 	padding: 10px;
 	border-bottom: 1px solid #ebebeb;
 	text-align: center;
 }
 .listTable {
-	width: 800px;
+	width: 100%;
 	margin: 20px auto;
 }
 .title {
@@ -26,12 +27,36 @@
 	font-weight: bold;
 	text-indent: 20px;
 }
+@media (max-width: 400px) {
+	.title {
+	font-size: 12pt;
+	font-weight: bold;
+	text-indent: 15px;
+}
+.listBox {
+	width: 100%;
+}
+}
 .title:hover {
 	cursor: pointer;
+}
+.userName {
+	color:grey; font-size: 12pt;
+}
+@media (max-width: 400px) {
+	.userName {
+	color:grey; font-size: 8pt;
+}
 }
 .subtitle {
 	font-size: 11pt;
 }
+@media (max-width: 400px) {
+	.subtitle {
+		font-size: 8pt;
+	}
+}
+
 .like {
 	background: rgb(133,228,252,0.4);
 	width: 50px;
