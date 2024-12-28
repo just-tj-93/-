@@ -134,7 +134,7 @@
 		<div class="listBox">
 			<div class="titleBox">
 				<div class="title">[[${planVO.title}]] <span class="date"> ([[${#dates.format(planVO.start_date,'YY/MM/dd')}]] ~ [[${#dates.format(planVO.end_date,'YY/MM/dd')}]])</span></div>
-				<div class="reg" style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]<i class="bi bi-share-fill" style="margin-right: 10px;"></i></div>
+				<div class="reg" style="line-height: 50px;">[[${#dates.format(planVO.reg_date,'YY/MM/dd')}]]</div>
 			</div>
 			<div th:each="item : ${#numbers.sequence(1, planVO.days)}">
 			<div style="text-align:center; font-weight: bold; font-size: 14pt; color: rgba(255, 115, 255);">Day [[${item}]]</div>

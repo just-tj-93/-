@@ -86,6 +86,9 @@ img {
 .spot {
 	font-weight: bold; font-size: 15pt; text-indent: 10px;
 }
+.date {
+	font-size: 12pt;
+}
 @media (max-width: 400px) { 
 	.title {
 	font-size: 12pt;
