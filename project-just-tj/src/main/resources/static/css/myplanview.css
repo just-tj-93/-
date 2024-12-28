@@ -2,7 +2,7 @@
 .listBox {
 	position: relative;
 	margin: 90px auto;
-	width: 100%;
+	width: 80%;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -135,22 +135,6 @@ table span {
 	border-radius: 10px;
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
-@media (max-width: 400px) { 
-	.location {
-	width: 150px;
-	height: 150px;
-	border-radius: 10px;
-	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
-.detailBox {
-	position: relative;
-	width:100%;
-	display: none;
-	margin: 0px auto;
-	border-top: 1px solid grey;
-	padding: 10px;
-}
-}
 #previewBox img {
 	width: 120px;
 	height: 110px;
@@ -171,3 +155,27 @@ table span {
 	margin: 10px auto;
 }
 
+
+@media (max-width: 400px) { 
+	.location {
+	width: 150px;
+	height: 150px;
+	border-radius: 10px;
+	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+.detailBox {
+	position: relative;
+	width:100%;
+	display: none;
+	margin: 0px auto;
+	border-top: 1px solid grey;
+	padding: 10px;
+}
+#prev, #next {
+	background: rgba(0, 0, 0, 0);
+	border: none;
+}
+.listBox {
+		width: 100%;
+	}
+}

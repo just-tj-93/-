@@ -1,7 +1,7 @@
 .listBox {
 	position: relative;
 	margin: 90px auto;
-	width: 100%;
+	width: 80%;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -22,7 +22,6 @@
 	margin:20px auto;
 }
 .container {
-	width: 100%;
 	display: flex;
 }
 .pic {
@@ -61,7 +60,7 @@ img {
 .popUp {
 	position: relative;
 	margin: 300px auto;
-	width: 370px; height: 130px;
+	width: 380px; height: 130px;
 	border-radius: 10px;
 	background-color: white;
 	z-index: 30;
@@ -71,7 +70,7 @@ img {
 .inBox {
 	position: relative;
 	top: 10px;
-	width: 350px;
+	width: 360px;
 	margin: 10px auto; 
 }
 .formBox {
@@ -113,8 +112,8 @@ img {
 		margin-bottom: 10px;
 	}
 	img {
-	width: 140px;
-	height: 140px;
+	width: 150px;
+	height: 150px;
 	}
 	.detailBox {
 	position: relative;
@@ -129,8 +128,8 @@ table span {
 }
 @media (max-width: 400px) { 
 	.location {
-	width: 140px;
-	height: 140px;
+	width: 150px;
+	height: 150px;
 	border-radius: 10px;
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
@@ -148,6 +147,7 @@ table span {
 	position: relative; 
 	top: 100px;
 	width: 40px;
+	background: rgba(205, 225, 245, 0);
 }
 @media (max-width: 400px) { 
 .caret {
@@ -165,4 +165,12 @@ table span {
 	font-size: 10pt;
 	font-weight: normal;
 }
+.listBox {
+		width: 100%;
 	}
+	}
+	
+#next, #prev {
+	background: rgba(205, 225, 245, 0);
+	border: none;
+}

@@ -1,8 +1,9 @@
 
 .listBox {
 	position: relative;
-	margin: 160px auto;
-	width: 100%;
+	margin: 90px auto;
+	width: 80%;
+	line-height: 45px;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
@@ -14,13 +15,13 @@
 	justify-content: space-between;
 	margin: 10px auto;
 	text-indent: 10px;
-	width: 850px;
+	width: 100%;
 	border-radius: 10px;
 	background: rgba(215, 215, 255, 0.5);
 }
 
 .listTable {
-	width: 850px;
+	width: 100%;
 	margin: 20px auto;
 }
 
@@ -66,7 +67,7 @@ img {
 }
 .detailBox {
 	position: relative;
-	width: 600px;
+	width: 90%;
 	display: none;
 	margin: 20px auto;
 }
@@ -99,7 +100,10 @@ img {
 #search-container {
 	margin: 10px auto;
 }
-
+#d-day {
+		color: blue;
+		font-size: 14pt;
+	}
 input[type="checkbox"] {
 	-ms-transform: scale(1.5); /* IE */
 	-moz-transform: scale(1.5); /* Firefox */
@@ -107,4 +111,60 @@ input[type="checkbox"] {
 	-o-transform: scale(1.5); /* Opera */
 	transform: scale(1.5);
 	margin: 10px;
+}
+.idx {
+	font-weight: bold;
+	text-indent: 5px;
+	font-size: 15pt;
+}
+@media (max-width: 400px) { 
+	.todoTitle {
+		font-size: 12pt;
+	}
+	#d-day {
+		color: blue;
+		font-size: 10pt;
+	}
+	.dates {
+		font-size: 8pt;
+	}
+	.reg {
+		font-size: 10pt;
+		line-height: 45px;
+	}
+	.spot {
+		font-size: 10pt;
+	}
+	.idx {
+		font-size: 10pt;
+		text-indent: 5px;
+	}
+	.timeInfo {
+		font-size: 8pt;
+	}
+	.info {
+		font-size: 8pt;
+	}
+	.form-check {
+		width: 20px;
+	}
+	#map {
+		height: 280px;
+		width: 350px;
+		margin-bottom: 10px;
+	}
+	.location {
+		display: none;
+		width: 180px;
+		height: 140px;
+		margin-top: 5px;
+		border-radius: 10px;
+		box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+	}
+	.address {
+		font-size: 8pt;
+	}
+	.listBox {
+		width: 100%;
+	}
 }
