@@ -84,9 +84,12 @@ img {
 	font-weight: bold;
 	text-indent: 20px;
 }
+.spot {
+	font-weight: bold; font-size: 15pt; text-indent: 10px;
+}
 @media (max-width: 400px) { 
 	.title {
-	font-size: 14pt;
+	font-size: 12pt;
 	font-weight: bold;
 	text-indent: 10px;
 }
@@ -110,8 +113,8 @@ img {
 		margin-bottom: 10px;
 	}
 	img {
-	width: 150px;
-	height: 150px;
+	width: 140px;
+	height: 140px;
 	}
 	.detailBox {
 	position: relative;
@@ -126,8 +129,8 @@ table span {
 }
 @media (max-width: 400px) { 
 	.location {
-	width: 150px;
-	height: 150px;
+	width: 140px;
+	height: 140px;
 	border-radius: 10px;
 	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
@@ -151,5 +154,15 @@ table span {
 	position: relative; 
 	top: 50px;
 	width: 25px;
+}
+.spot {
+	font-size: 12pt;
+}
+.info {
+	font-size: 10pt;
+}
+.detailAdd {
+	font-size: 10pt;
+	font-weight: normal;
 }
 	}
