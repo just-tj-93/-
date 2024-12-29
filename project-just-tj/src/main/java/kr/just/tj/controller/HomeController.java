@@ -234,7 +234,8 @@ public class HomeController {
 		return "mytodoview";
 	}
 	@PostMapping("/updateChecked")
-    public String updateChecked(@RequestParam("todo_list_id") int todo_list_id, @RequestParam("checked") boolean checked) {
+    public String updateChecked(@RequestParam("todo_list_id") int todo_list_id,
+    		@RequestParam("checked") boolean checked) {
         TodoListVO todoListVO = new TodoListVO();
         todoListVO.setTodo_list_id(todo_list_id);
         todoListVO.setChecked(checked ? "Y" : "N");
@@ -285,7 +286,6 @@ public class HomeController {
 			
 			            objectStorageClient.putObject(putObjectRequest);
 			            log.info("버켓 업로드 성공 " + fileName);
-			            
 			            fileIndex++;
             		}
             	}
