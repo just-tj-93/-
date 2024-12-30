@@ -2,7 +2,7 @@
 .listBox {
 	position: relative;
 	margin: 90px auto;
-	width: 60%;
+	width: 50%;
 	border: 1px solid lightgrey;
 	border-radius: 10px;
 	background: rgba(205, 215, 255, 0.15);
