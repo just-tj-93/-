@@ -40,11 +40,17 @@ public class UserController {
 
         // 중복 확인
         int countUsername = userService.selectCountByUsername(user.getUsername());
-
+        int countEmail = userService.selectCountByEmail(user.getEmail());
+        
         if (countUsername > 0) {
             response.put("status", "fail");
             response.put("message", "이미 사용 중인 아이디입니다.");
             return response;
+        }
+        if (countEmail > 0) {
+        	response.put("status", "fail");
+        	response.put("message", "이미 사용 중인 이메일입니다.");
+        	return response;
         }
 
         // 회원가입 성공
@@ -55,20 +61,19 @@ public class UserController {
     }
     
     //아이디 중복확인
-    @GetMapping(value = "/test/usernameCheck", produces = "text/plain;charset=UTF-8")
+    @GetMapping("/usernameCheck")
     @ResponseBody
-    public String usernameCheck(@RequestParam("user_name") String user_name) {
+    public int usernameCheck(@RequestParam("user_name") String user_name) {
         int count = userService.selectCountByUsername(user_name);
         log.info("아이디 중복 확인 요청: {}, 결과: {}", user_name, count);
-        return String.valueOf(count);
+        return count;
     }
     //이메일 중복확인
-    @GetMapping(value = "/test/emailCheck", produces = "text/plain;charset=UTF-8")
+    @GetMapping("/emailCheck")
     @ResponseBody
-    public String emailCheck(@RequestParam("email") String email) {
+    public int emailCheck(@RequestParam("email") String email) {
     	int count = userService.selectCountByEmail(email);
-    	log.info("이메일 중복 확인 요청: {}, 결과: {}", email, count);
-    	return String.valueOf(count);
+        return count;
     }
     //로그인페이지
     @GetMapping("/login")

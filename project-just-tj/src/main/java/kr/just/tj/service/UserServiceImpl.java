@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService{
 	//아이디 중복 확인
 	@Override
 	public int selectCountByUsername(String user_name) {
-		int countUsername = 1;
+		int countUsername = 0;
 		try {
 			countUsername = userDAO.selectCountByUsername(user_name);
 		} catch (SQLException e) {
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public int selectCountByEmail(String email) {
-		int countEmail = 1;
+		int countEmail = 0;
 		try {
 			countEmail = userDAO.selectCountByEmail(email);
 		} catch (SQLException e) {
