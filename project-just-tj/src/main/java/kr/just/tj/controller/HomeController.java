@@ -143,7 +143,6 @@ public class HomeController {
 		model.addAttribute("search", search);
 		model.addAttribute("newLine", "\n");
 		model.addAttribute("br", "<br>");
-
 		return "main";
 	}
 	@GetMapping("/planview")
@@ -266,7 +265,7 @@ public class HomeController {
 	            int fileIndex = 1;
 	            for (MultipartFile file : files) {
 	            	if (file.getSize() > maxFileSize) {
-	                    log.info("File size should not exceed 5MB");
+	                    log.info("5MB 이하의 파일만 등록 가능합니다");
 	                    return "redirect:/myplanview?plan_id=" + detailVO.getPlan_id();
 	                }
             		if(!file.isEmpty()) { 

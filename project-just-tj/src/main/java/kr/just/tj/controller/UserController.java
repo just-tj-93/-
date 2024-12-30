@@ -90,7 +90,7 @@ public class UserController {
     	
     	if(userVO.getUser_name() != null) {
     		log.info("아이디찾기 성공: {}", userVO.getUser_name());
-    		model.addAttribute("username", userVO.getUser_name());
+    		model.addAttribute("user_name", userVO.getUser_name());
     		return "find-username-result";
     	} else {
     		log.warn("아이디 찾기 실패:  이메일 = {}", email);
@@ -107,13 +107,13 @@ public class UserController {
     
     //비밀번호찾기(사용자조회)
     @PostMapping("/find-password")
-    public String findPassword(@RequestParam("username") String user_name,
+    public String findPassword(@RequestParam("user_name") String user_name,
     							@RequestParam("email") String email,
     							Model model) {
     	UserVO user = userService.selectByUsername(user_name);
     	
     	if (user != null) {
-    		model.addAttribute("username", user_name);
+    		model.addAttribute("user_name", user_name);
     		return "reset-password";
     	} else {
     		model.addAttribute("error", "입력한 정보와 일치하는 계정이 없습니다");

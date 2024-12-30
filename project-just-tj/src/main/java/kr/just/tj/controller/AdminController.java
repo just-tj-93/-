@@ -53,26 +53,4 @@ public class AdminController {
 		model.addAttribute("user_id",user_id);
 		return "admin-userdetails";
 	}
-		// 토스트 에디터 이미지 처리
-		@ResponseBody
-		@RequestMapping(value = "/image_upload.do", method = RequestMethod.POST)
-		public String imageUpload(@RequestParam("image")MultipartFile multipartFile,
-								  HttpServletRequest request) {
-			String projectDir = System.getProperty("user.dir");
-			String filePath = projectDir +  "/src/main/resources/static/images/products/toast";
-			File file = new File(filePath);
-			if(!file.exists()) file.mkdirs();
-			String fileName = multipartFile.getOriginalFilename();
-			int lastIndex = fileName.lastIndexOf(".");
-			String ext = fileName.substring(lastIndex, fileName.length());
-			String newFileName = LocalDate.now() + "_" + System.currentTimeMillis() + ext;
-
-			try {
-				File image = new File(filePath, newFileName);
-				multipartFile.transferTo(image);
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
-			return "/images/products/toast/" + newFileName;
-		}
 }
